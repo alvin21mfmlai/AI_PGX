@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "captured_utc": "2026-09-11T13:36:27Z",
+  "platform": {
+    "architecture": "aarch64",
+    "torch": "2.10.0a0+b558c986e8.nv25.11",
+    "cuda_runtime": "13.0",
+    "cudnn": 91500,
+    "device_name": "NVIDIA GB10",
+    "compute_capability": [
+      12,
+      1
+    ]
+  },
+  "configuration": {
+    "output_json": "raw/torch-baseline-20260911T133621.601983Z-run01.json",
+    "output_csv": "raw/torch-baseline-20260911T133621.601983Z-run01.csv",
+    "size": 4096,
+    "warmup": 5,
+    "trials": 10,
+    "seed": 5201
+  },
+  "correctness": {
+    "finite": true,
+    "relative_l2_error": 0.0028782004956156015,
+    "relative_l2_tolerance": 0.02,
+    "max_abs_error_diagnostic": 0.2726478576660156
+  },
+  "summary": {
+    "median_tflops": 84.04702362014646,
+    "min_tflops": 47.29484167362158,
+    "max_tflops": 86.72896200522452,
+    "coefficient_of_variation": 0.19943184540053716,
+    "stability_pass": false
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "seconds": 0.0028399560251273215,
+      "tflops": 48.39474705099995,
+      "sample": -66.5
+    },
+    {
+      "trial": 2,
+      "seconds": 0.0029060030356049538,
+      "tflops": 47.29484167362158,
+      "sample": -66.5
+    },
+    {
+      "trial": 3,
+      "seconds": 0.001628199010156095,
+      "tflops": 84.41164293474405,
+      "sample": -66.5
+    },
+    {
+      "trial": 4,
+      "seconds": 0.0016321020084433258,
+      "tflops": 84.20978147259753,
+      "sample": -66.5
+    },
+    {
+      "trial": 5,
+      "seconds": 0.0015846950118429959,
+      "tflops": 86.72896200522452,
+      "sample": -66.5
+    },
+    {
+      "trial": 6,
+      "seconds": 0.0016344389878213406,
+      "tflops": 84.08937531232176,
+      "sample": -66.5
+    },
+    {
+      "trial": 7,
+      "seconds": 0.0016862780321389437,
+      "tflops": 81.50432541522636,
+      "sample": -66.5
+    },
+    {
+      "trial": 8,
+      "seconds": 0.0016360870213247836,
+      "tflops": 84.00467192797116,
+      "sample": -66.5
+    },
+    {
+      "trial": 9,
+      "seconds": 0.0016250950284302235,
+      "tflops": 84.57287178138776,
+      "sample": -66.5
+    },
+    {
+      "trial": 10,
+      "seconds": 0.001663206028752029,
+      "tflops": 82.63495387587432,
+      "sample": -66.5
+    }
+  ]
+}

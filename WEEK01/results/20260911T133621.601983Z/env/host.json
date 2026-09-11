@@ -1,0 +1,7 @@
+{
+  "captured_utc": "20260911T133621.601983Z",
+  "architecture": "aarch64",
+  "os": "Linux-6.17.0-1032-nvidia-aarch64-with-glibc2.39",
+  "python": "3.12.3 (main, Jul 15 2026, 23:46:41) [GCC 13.3.0]",
+  "free_disk_bytes": 3752452120576
+}

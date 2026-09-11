@@ -1,0 +1,12 @@
+{
+  "architecture": "aarch64",
+  "torch": "2.10.0a0+b558c986e8.nv25.11",
+  "cuda_runtime": "13.0",
+  "device": "NVIDIA GB10",
+  "compute_capability": [
+    12,
+    1
+  ],
+  "device_count": 1,
+  "kernel_result": 256.0
+}
