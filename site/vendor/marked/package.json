@@ -1,0 +1,6 @@
+{
+  "name": "marked-vendored",
+  "private": true,
+  "type": "module",
+  "description": "marked 18.0.13 (MIT) — vendored ESM build; see LICENSE"
+}

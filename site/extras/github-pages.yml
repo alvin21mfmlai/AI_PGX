@@ -1,0 +1,47 @@
+# Optional: publish the same site with GitHub Pages instead of (or as well as) Vercel.
+#
+# 1. Copy this file to .github/workflows/pages.yml in the AI_PGX repository.
+# 2. In the repository settings → Pages, set "Source" to "GitHub Actions".
+# 3. Push. The site will be served at https://<owner>.github.io/AI_PGX/
+#
+# The build uses relative links everywhere, so it works under the /AI_PGX/ sub-path.
+name: Publish site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history so first-commit dates are available as a fallback
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build the site
+        run: node site/build.mjs --url "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

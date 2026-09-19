@@ -1,0 +1,486 @@
+{
+  "site": {
+    "name": "PGX_AI_Adventures",
+    "shortName": "PGX_AI",
+    "tagline": "Weekly AI prototypes and experiments on a desk-sized Grace Blackwell workstation.",
+    "description": "A public lab notebook: one AI prototype or experiment every week on a Lenovo ThinkStation PGX (NVIDIA GB10 Grace Blackwell, 128 GB unified memory), with reproducible code, raw results and provenance for every run.",
+    "url": "",
+    "language": "en",
+    "themeColor": "#06080d"
+  },
+  "repo": {
+    "owner": "alvin21mfmlai",
+    "name": "AI_PGX",
+    "branch": "main"
+  },
+  "programme": {
+    "label": "Week",
+    "totalWeeks": 52,
+    "cadence": "One experiment folder lands in the repository every week.",
+    "roadmapIntro": "Week 01 set the baseline. The themes below are the planned direction of travel — the order and scope may change as the experiments teach me things.",
+    "roadmap": [
+      {
+        "title": "Platform baseline",
+        "blurb": "Reproducible PyTorch throughput and correctness on the GB10, pinned to a container digest.",
+        "status": "done",
+        "week": 1
+      },
+      {
+        "title": "Local LLMs",
+        "blurb": "Serving open-weight models from the 128 GB unified memory: quantisation, context length and tokens per second.",
+        "status": "planned"
+      },
+      {
+        "title": "NanoChat",
+        "blurb": "Training a small chat model end to end on a single desk-side machine.",
+        "status": "planned"
+      },
+      {
+        "title": "Retrieval-augmented generation",
+        "blurb": "Local embeddings, vector search and grounded answers over private documents.",
+        "status": "planned"
+      },
+      {
+        "title": "Agents",
+        "blurb": "Tool-using agents running fully on-device, with an eye on cost, latency and safety.",
+        "status": "planned"
+      },
+      {
+        "title": "Time-series models",
+        "blurb": "Forecasting and anomaly detection on sensor data with modern sequence models.",
+        "status": "planned"
+      },
+      {
+        "title": "AI security",
+        "blurb": "Privacy-preserving inference, adversarial robustness and confidential pipelines — my research home turf.",
+        "status": "planned"
+      }
+    ]
+  },
+  "author": {
+    "name": "Alvin",
+    "handle": "alvin21mfmlai",
+    "role": "Privacy-preserving AI and cybersecurity researcher",
+    "location": "Singapore",
+    "bio": "I work on homomorphic encryption, confidential retrieval-augmented generation pipelines and privacy-preserving inference. PGX_AI_Adventures is my public, weekly lab notebook: every experiment runs on the ThinkStation PGX on my desk, and everything needed to reproduce it — code, container digest, raw numbers and environment inventory — is published alongside the write-up.",
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/alvin21mfmlai",
+        "icon": "github"
+      },
+      {
+        "label": "LinkedIn",
+        "url": "",
+        "icon": "linkedin"
+      },
+      {
+        "label": "Google Scholar",
+        "url": "",
+        "icon": "scholar"
+      }
+    ]
+  },
+  "machine": {
+    "name": "Lenovo ThinkStation PGX",
+    "chip": "NVIDIA GB10 Grace Blackwell Superchip",
+    "intro": "The whole programme runs on one small workstation — a 150 mm square box that puts a Blackwell GPU, a 20-core Arm CPU and 128 GB of memory on a single coherent memory pool. That unified memory is the reason a desk-side machine can hold models that would not fit on a typical discrete GPU.",
+    "headline": [
+      {
+        "value": "1",
+        "unit": "PFLOP",
+        "label": "FP4 AI performance (with sparsity)",
+        "ref": "lenovo-press"
+      },
+      {
+        "value": "128",
+        "unit": "GB",
+        "label": "LPDDR5x unified memory",
+        "ref": "lenovo-press"
+      },
+      {
+        "value": "273",
+        "unit": "GB/s",
+        "label": "memory bandwidth, 256-bit bus",
+        "ref": "lenovo-press"
+      },
+      {
+        "value": "20",
+        "unit": "cores",
+        "label": "Arm CPU: 10× Cortex-X925 + 10× Cortex-A725",
+        "ref": "lenovo-press"
+      }
+    ],
+    "specs": [
+      {
+        "group": "GPU",
+        "label": "Architecture",
+        "value": "NVIDIA Blackwell, 48 streaming multiprocessors (6,144 CUDA cores), 5th-gen Tensor Cores, 4th-gen RT Cores",
+        "ref": [
+          "lenovo-press",
+          "nvidia-forum-perf",
+          "techpowerup-gb10"
+        ]
+      },
+      {
+        "group": "GPU",
+        "label": "Compute capability",
+        "value": "12.1 (sm_121) — consumer-Blackwell class, confirmed by NVIDIA",
+        "ref": [
+          "nvidia-forum-cc",
+          "chipsandcheese-gb10"
+        ]
+      },
+      {
+        "group": "GPU",
+        "label": "Peak FP32 (non-tensor)",
+        "value": "≈31 TFLOPS; 24 MB L2 cache shared coherently with the CPU",
+        "ref": [
+          "sth-hotchips",
+          "chipsandcheese-gb10"
+        ]
+      },
+      {
+        "group": "CPU",
+        "label": "Cores",
+        "value": "20 Arm v9.2 cores in two clusters — 10× Cortex-X925 and 10× Cortex-A725 (3.9 GHz and 2.8 GHz maximum clocks as reported by lscpu on this machine)",
+        "ref": [
+          "lenovo-press",
+          "sth-hotchips"
+        ]
+      },
+      {
+        "group": "CPU",
+        "label": "Silicon",
+        "value": "Two TSMC 3 nm dies — an NVIDIA Blackwell GPU die and a MediaTek-built CPU/memory-controller die — joined by NVIDIA NVLink-C2C, which gives the CPU and GPU one coherent memory model with 5× the bandwidth of PCIe Gen 5",
+        "ref": [
+          "sth-hotchips",
+          "nvidia-newsroom-dgx-spark"
+        ]
+      },
+      {
+        "group": "Memory",
+        "label": "Capacity",
+        "value": "128 GB LPDDR5x, coherent unified system memory (about 120 GB visible to the OS)",
+        "ref": [
+          "lenovo-press",
+          "nvidia-forum-perf"
+        ]
+      },
+      {
+        "group": "Memory",
+        "label": "Bandwidth",
+        "value": "273 GB/s over a 256-bit interface",
+        "ref": "lenovo-press"
+      },
+      {
+        "group": "Storage",
+        "label": "NVMe",
+        "value": "4 TB M.2 SSD with self-encryption (1 TB option)",
+        "ref": "lenovo-press"
+      },
+      {
+        "group": "Networking",
+        "label": "High-speed",
+        "value": "NVIDIA ConnectX-7 with 2× QSFP ports (200 Gb/s) for linking two nodes; 10 GbE RJ-45; Wi-Fi 7",
+        "ref": [
+          "lenovo-press",
+          "nvidia-dgx-spark"
+        ]
+      },
+      {
+        "group": "Networking",
+        "label": "Model scale",
+        "value": "Up to 200 B-parameter models on one node; two linked nodes reach 405 B",
+        "ref": "lenovo-press"
+      },
+      {
+        "group": "System",
+        "label": "Operating system",
+        "value": "NVIDIA DGX OS (Ubuntu 24.04 LTS base with the NVIDIA AI software stack)",
+        "ref": "nvidia-dgx-spark-docs"
+      },
+      {
+        "group": "System",
+        "label": "Size and power",
+        "value": "150 × 150 × 50.5 mm, 1.2 kg, 240 W USB-C power supply; 140 W SoC TDP",
+        "ref": [
+          "lenovo-press",
+          "nvidia-dgx-spark",
+          "sth-hotchips"
+        ]
+      }
+    ],
+    "note": "Manufacturer figures. The 1 PFLOP headline is FP4 precision with structured sparsity; dense BF16 matrix multiplications — the kind measured in Week 01 — run at a different precision and are not directly comparable to it."
+  },
+  "method": {
+    "intro": "Every week follows the same discipline so that results can be trusted, compared and reproduced by anyone with the same machine.",
+    "steps": [
+      {
+        "title": "One command",
+        "blurb": "Each week folder ships a runner script. Clone the repository on the PGX and run it — no manual setup, no GUI."
+      },
+      {
+        "title": "Pinned environment",
+        "blurb": "Workloads run inside NVIDIA's official containers, locked by image digest and recorded next to the results."
+      },
+      {
+        "title": "Repetitions, not anecdotes",
+        "blurb": "Benchmarks repeat the measurement with warm-ups and multiple timed trials; variability is reported, never hidden."
+      },
+      {
+        "title": "Provenance on disk",
+        "blurb": "GPU, driver, CUDA, OS, packages and the exact source used for the run are captured with every session, plus SHA-256 checksums of the outputs."
+      },
+      {
+        "title": "Honest interpretation",
+        "blurb": "Synthetic numbers are labelled as such. A stability warning is kept in the record, not deleted."
+      }
+    ]
+  },
+  "references": [
+    {
+      "id": "lenovo-press",
+      "title": "ThinkStation PGX Product Guide (LP2321)",
+      "publisher": "Lenovo Press",
+      "url": "https://lenovopress.lenovo.com/lp2321-thinkstation-pgx",
+      "note": "Superchip, CPU cores, memory, bandwidth, storage, networking, OS, dimensions, power and model-size figures."
+    },
+    {
+      "id": "lenovo-psref",
+      "title": "ThinkStation PGX specifications (PSREF)",
+      "publisher": "Lenovo",
+      "url": "https://psref.lenovo.com/syspool/Sys/PDF/ThinkStation/ThinkStation_PGX/ThinkStation_PGX_Spec.pdf",
+      "note": "Official specification sheet."
+    },
+    {
+      "id": "lenovo-product",
+      "title": "ThinkStation PGX — NVIDIA-powered AI development workstation",
+      "publisher": "Lenovo",
+      "url": "https://www.lenovo.com/us/en/p/workstations/thinkstation-p-series/lenovo-thinkstation-pgx-sff/len102s0023",
+      "note": "Product page."
+    },
+    {
+      "id": "nvidia-dgx-spark",
+      "title": "NVIDIA DGX Spark — personal AI supercomputer powered by Blackwell",
+      "publisher": "NVIDIA",
+      "url": "https://www.nvidia.com/en-us/products/workstations/dgx-spark/",
+      "note": "The GB10 platform the ThinkStation PGX is built on: 1 PFLOP FP4, 128 GB unified memory at 273 GB/s, ConnectX-7, DGX OS."
+    },
+    {
+      "id": "nvidia-newsroom-dgx-spark",
+      "title": "NVIDIA Announces DGX Spark and DGX Station Personal AI Computers (18 March 2025)",
+      "publisher": "NVIDIA Newsroom",
+      "url": "https://nvidianews.nvidia.com/news/nvidia-announces-dgx-spark-and-dgx-station-personal-ai-computers",
+      "note": "GB10 uses NVLink-C2C for a CPU+GPU-coherent memory model with 5× the bandwidth of PCIe Gen 5; fifth-generation Tensor Cores with FP4; up to 1,000 TOPS."
+    },
+    {
+      "id": "nvidia-dgx-spark-docs",
+      "title": "DGX Spark User Guide",
+      "publisher": "NVIDIA Docs",
+      "url": "https://docs.nvidia.com/dgx/dgx-spark/",
+      "note": "DGX OS, software stack, networking and system update documentation."
+    },
+    {
+      "id": "nvidia-forum-cc",
+      "title": "What will be the CUDA Compute Capability version of GB10?",
+      "publisher": "NVIDIA Developer Forums",
+      "url": "https://forums.developer.nvidia.com/t/dgx-spark-gb10-cuda-compute-capability/342864",
+      "note": "NVIDIA staff confirmation that DGX Spark / GB10 has compute capability 12.1."
+    },
+    {
+      "id": "nvidia-forum-perf",
+      "title": "Detailed Compute Performance Metrics for DGX Spark",
+      "publisher": "NVIDIA Developer Forums",
+      "url": "https://forums.developer.nvidia.com/t/detailed-compute-performance-metrics-for-dgx-spark/351993",
+      "note": "48 multiprocessors, 119.7 GiB visible memory, compute capability 12.1 and community peak-throughput measurements."
+    },
+    {
+      "id": "sth-hotchips",
+      "title": "NVIDIA Outlines GB10 SoC Architecture at Hot Chips 2025",
+      "publisher": "ServeTheHome",
+      "url": "https://www.servethehome.com/nvidia-outlines-gb10-soc-architecture-at-hot-chips-2025/",
+      "note": "3 nm dies, MediaTek CPU chiplet, 31 TFLOPS FP32, 24 MB L2, 140 W TDP, 256-bit LPDDR5x."
+    },
+    {
+      "id": "chipsandcheese-gb10",
+      "title": "Analyzing Nvidia GB10's GPU",
+      "publisher": "Chips and Cheese",
+      "url": "https://chipsandcheese.com/p/analyzing-nvidia-gb10s-gpu",
+      "note": "48 SMs at up to 2.55 GHz, 24 MB L2, micro-benchmarks and comparison with discrete Blackwell parts."
+    },
+    {
+      "id": "techpowerup-gb10",
+      "title": "NVIDIA Dissects GB10 Superchip SoC with 20 CPU Cores and 6,144 CUDA GPU Cores",
+      "publisher": "TechPowerUp",
+      "url": "https://www.techpowerup.com/340385/nvidia-dissects-gb10-superchip-soc-with-20-cpu-cores-and-6-144-cuda-gpu-cores",
+      "note": "CUDA core count and Hot Chips coverage."
+    },
+    {
+      "id": "nvidia-pytorch-25-11",
+      "title": "PyTorch Release 25.11 — container release notes",
+      "publisher": "NVIDIA Docs",
+      "url": "https://docs.nvidia.com/deeplearning/frameworks/pytorch-release-notes/rel-25-11.html",
+      "note": "The nvcr.io/nvidia/pytorch:25.11-py3 image used in Week 01: PyTorch 2.10.0a0, CUDA 13.0, Ubuntu 24.04."
+    },
+    {
+      "id": "nvidia-playbooks",
+      "title": "NVIDIA DGX Spark Playbooks",
+      "publisher": "NVIDIA on GitHub",
+      "url": "https://github.com/NVIDIA/dgx-spark-playbooks",
+      "note": "Step-by-step playbooks for PyTorch fine-tuning, vLLM, Ollama, ComfyUI, multi-node setups and more on GB10 devices."
+    },
+    {
+      "id": "pytorch-benchmark",
+      "title": "PyTorch Benchmark recipe",
+      "publisher": "PyTorch Tutorials",
+      "url": "https://docs.pytorch.org/tutorials/recipes/recipes/benchmark.html",
+      "note": "Warm-ups, synchronisation and timing practice that the weekly benchmarks follow."
+    },
+    {
+      "id": "vercel-build",
+      "title": "Configuring a Build",
+      "publisher": "Vercel Docs",
+      "url": "https://vercel.com/docs/builds/configure-a-build",
+      "note": "Build command, output directory and root-directory behaviour used to deploy this site."
+    }
+  ],
+  "tagRules": [
+    {
+      "tag": "PyTorch",
+      "match": [
+        "pytorch",
+        "torch"
+      ]
+    },
+    {
+      "tag": "Benchmark",
+      "match": [
+        "benchmark",
+        "throughput",
+        "tflop"
+      ]
+    },
+    {
+      "tag": "BF16",
+      "match": [
+        "bf16",
+        "bfloat16"
+      ]
+    },
+    {
+      "tag": "Docker",
+      "match": [
+        "docker",
+        "container"
+      ]
+    },
+    {
+      "tag": "CUDA",
+      "match": [
+        "cuda"
+      ]
+    },
+    {
+      "tag": "Reproducibility",
+      "match": [
+        "reproducib",
+        "provenance",
+        "checksum",
+        "sha256"
+      ]
+    },
+    {
+      "tag": "LLM",
+      "match": [
+        "llm",
+        "language model",
+        "llama",
+        "gpt",
+        "tokens/s",
+        "token/s"
+      ]
+    },
+    {
+      "tag": "Inference",
+      "match": [
+        "inference",
+        "serving",
+        "vllm",
+        "ollama",
+        "tensorrt"
+      ]
+    },
+    {
+      "tag": "Fine-tuning",
+      "match": [
+        "fine-tun",
+        "finetun",
+        "lora",
+        "training"
+      ]
+    },
+    {
+      "tag": "NanoChat",
+      "match": [
+        "nanochat"
+      ]
+    },
+    {
+      "tag": "RAG",
+      "match": [
+        "rag",
+        "retrieval-augmented",
+        "retrieval augmented",
+        "embedding",
+        "vector"
+      ]
+    },
+    {
+      "tag": "Agents",
+      "match": [
+        "agent"
+      ]
+    },
+    {
+      "tag": "Time series",
+      "match": [
+        "time-series",
+        "time series",
+        "forecast",
+        "anomaly"
+      ]
+    },
+    {
+      "tag": "Security",
+      "match": [
+        "security",
+        "adversarial",
+        "privacy",
+        "encryption",
+        "homomorphic",
+        "confidential"
+      ]
+    },
+    {
+      "tag": "Vision",
+      "match": [
+        "diffusion",
+        "image generation",
+        "vision",
+        "comfyui"
+      ]
+    },
+    {
+      "tag": "Quantisation",
+      "match": [
+        "quantis",
+        "quantiz",
+        "fp4",
+        "fp8",
+        "int8",
+        "gguf"
+      ]
+    }
+  ]
+}

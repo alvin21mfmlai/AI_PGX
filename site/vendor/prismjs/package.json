@@ -1,0 +1,6 @@
+{
+  "name": "prismjs-vendored",
+  "private": true,
+  "type": "commonjs",
+  "description": "Prism 1.30.0 core + language components (MIT) — vendored; see LICENSE"
+}

@@ -1,0 +1,14 @@
+{
+  "_comment": "OPTIONAL. Copy this file to WEEKnn/week.json to override what the site derives automatically. Every key is optional; delete the ones you do not need (and this _comment).",
+  "title": "Platform Baseline",
+  "subtitle": "A one-line sub-heading shown under the title",
+  "summary": "One or two sentences for the card on the home page (defaults to the first paragraph of README.md).",
+  "date": "2026-09-11",
+  "tags": ["PyTorch", "BF16", "Benchmark"],
+  "highlights": [
+    { "label": "runs", "value": "3" },
+    { "label": "median throughput", "value": 82.4, "unit": "TFLOP/s", "numeric": true },
+    { "label": "correctness", "value": "PASS", "status": "good" }
+  ],
+  "cover": "results/20260911T133621.601983Z/throughput.png"
+}
