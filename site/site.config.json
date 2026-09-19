@@ -1,6 +1,6 @@
 {
   "site": {
-    "name": "PGX_AI_Adventures",
+    "name": "AI Adventures with ThinkStation PGX",
     "shortName": "PGX_AI",
     "tagline": "Weekly AI prototypes and experiments on a desk-sized Grace Blackwell workstation.",
     "description": "A public lab notebook: one AI prototype or experiment every week on a Lenovo ThinkStation PGX (NVIDIA GB10 Grace Blackwell, 128 GB unified memory), with reproducible code, raw results and provenance for every run.",
