@@ -61,7 +61,7 @@
     "name": "Alvin",
     "handle": "alvin21mfmlai",
     "location": "Singapore",
-    "bio": "I work on homomorphic encryption, confidential retrieval-augmented generation pipelines and privacy-preserving inference. PGX_AI_Adventures is my public, weekly lab notebook: every experiment runs on the ThinkStation PGX on my desk, and everything needed to reproduce it — code, container digest, raw numbers and environment inventory — is published alongside the write-up.",
+    "bio": "I enjoy AI related research and experiments. I am currently pursuing new foundations in domain constrained LLM/VLM for engineering applications which include, but not limited to, time-series foundational models, LLM-based time series analysis, and confidential retrieval controls for RAG.",
     "links": [
       {
         "label": "GitHub",
@@ -70,12 +70,12 @@
       },
       {
         "label": "LinkedIn",
-        "url": "",
+        "url": "https://www.linkedin.com/in/alvinchew21/",
         "icon": "linkedin"
       },
       {
         "label": "Google Scholar",
-        "url": "",
+        "url": "https://scholar.google.com.sg/citations?user=z-CILqgAAAAJ&hl=en",
         "icon": "scholar"
       }
     ]
