@@ -1,0 +1,7 @@
+{
+  "backend": "cpu-stdlib", "n": 32, "seed": 20260914,
+  "pairs": 1, "seconds": 2, "warmup_seconds": 0.2,
+  "batch": 1, "sample_seconds": 0.2,
+  "min_available_gib": 0.1, "max_gap_seconds": 3.5,
+  "correctness_tolerance": 0.02
+}

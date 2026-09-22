@@ -1,0 +1,6 @@
+results/
+exports/
+cache/
+.env
+*.token
+__pycache__/
