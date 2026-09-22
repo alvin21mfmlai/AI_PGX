@@ -1,0 +1,29 @@
+{
+  "backend": "cuda",
+  "dtype": "BF16",
+  "torch": "2.10.0a0+b558c986e8.nv25.11",
+  "cuda_runtime": "13.0",
+  "device": "NVIDIA GB10",
+  "capability": [
+    12,
+    1
+  ],
+  "arch_list": [
+    "sm_80",
+    "sm_86",
+    "sm_90",
+    "sm_100",
+    "sm_110",
+    "sm_120",
+    "compute_120"
+  ],
+  "correctness_error": 0.002754065440967679,
+  "correctness_scope": "16x16 output slice with full K against unquantized CPU FP32",
+  "allocated_bytes": 109182976,
+  "reserved_bytes": 207618048,
+  "python": "3.12.3 (main, Aug 14 2025, 17:47:21) [GCC 13.3.0]",
+  "machine": "aarch64",
+  "kernel": "6.17.0-1032-nvidia",
+  "script_sha256": "32f7e09cd5c220e67326d6f58013cd5a19cff0893c8587e2bb0ab48549245b74",
+  "started_utc": "2026-09-22T07:34:45Z"
+}

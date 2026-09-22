@@ -1,0 +1,22 @@
+{
+  "case": "p3-on",
+  "pair": 3,
+  "observed": true,
+  "start": 1218518.112875089,
+  "end": 1218548.221223054,
+  "operations": 18944,
+  "wall_seconds": 30.10834796493873,
+  "ops_per_second": 629.1942693787234,
+  "median_block_tflops": 86.84129079833964,
+  "block_cv": 0.0066329381933748835,
+  "blocks": 74,
+  "min_available_gib": 116.72117614746094,
+  "max_query_seconds": 0.035102973924949765,
+  "energy_j": 2610.7386746266843,
+  "coverage": 1.0,
+  "valid_power_samples": 29,
+  "energy_status": "sensor-domain estimate",
+  "joules_per_matmul": 0.1378134857805471,
+  "torch_peak_allocated_bytes": 193069056,
+  "torch_peak_reserved_bytes": 207618048
+}

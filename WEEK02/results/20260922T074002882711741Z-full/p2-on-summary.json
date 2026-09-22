@@ -1,0 +1,22 @@
+{
+  "case": "p2-on",
+  "pair": 2,
+  "observed": true,
+  "start": 1218337.392894015,
+  "end": 1218367.474851286,
+  "operations": 18944,
+  "wall_seconds": 30.081957271089777,
+  "ops_per_second": 629.7462571760949,
+  "median_block_tflops": 86.84706181914103,
+  "block_cv": 0.006596461925235157,
+  "blocks": 74,
+  "min_available_gib": 116.70785903930664,
+  "max_query_seconds": 0.034823732916265726,
+  "energy_j": 2622.2545937746445,
+  "coverage": 1.0,
+  "valid_power_samples": 29,
+  "energy_status": "sensor-domain estimate",
+  "joules_per_matmul": 0.13842137847205682,
+  "torch_peak_allocated_bytes": 193069056,
+  "torch_peak_reserved_bytes": 207618048
+}

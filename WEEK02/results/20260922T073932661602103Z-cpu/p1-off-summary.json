@@ -1,0 +1,20 @@
+{
+  "case": "p1-off",
+  "pair": 1,
+  "observed": false,
+  "start": 1218155.212063762,
+  "end": 1218157.213091112,
+  "operations": 1808,
+  "wall_seconds": 2.001027350081131,
+  "ops_per_second": 903.535876172155,
+  "median_block_tflops": 6.0394164720719417e-05,
+  "block_cv": 0.006808722347366536,
+  "blocks": 1808,
+  "min_available_gib": null,
+  "max_query_seconds": null,
+  "energy_j": null,
+  "coverage": 0.0,
+  "valid_power_samples": 0,
+  "energy_status": "unavailable: missing/short/invalid power trace",
+  "joules_per_matmul": null
+}

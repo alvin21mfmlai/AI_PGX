@@ -1,0 +1,13 @@
+{
+  "backend": "cuda",
+  "n": 4096,
+  "seed": 20260914,
+  "pairs": 3,
+  "seconds": 30,
+  "warmup_seconds": 30,
+  "batch": 256,
+  "sample_seconds": 1.0,
+  "min_available_gib": 16,
+  "max_gap_seconds": 3.5,
+  "correctness_tolerance": 0.02
+}

@@ -1,0 +1,3 @@
+case,operations,wall_seconds,ops_per_second,median_block_tflops,block_cv,energy_j,joules_per_matmul,coverage,energy_status
+p1-off,1808,2.001027350081131,903.535876172155,6.0394164720719417e-05,0.006808722347366536,,,0.0,unavailable: missing/short/invalid power trace
+p1-on,1800,2.0001220980193466,899.9450592453727,6.056338133486242e-05,0.008896451171808218,,,0.0,unavailable: missing/short/invalid power trace

@@ -1,0 +1,11 @@
+{
+  "backend": "cpu-stdlib",
+  "dtype": "Python float",
+  "correctness_error": 0.0,
+  "correctness_scope": "CPU pipeline smoke only; not CUDA validation",
+  "python": "3.12.3 (main, Jul 15 2026, 23:46:41) [GCC 13.3.0]",
+  "machine": "aarch64",
+  "kernel": "6.17.0-1032-nvidia",
+  "script_sha256": "32f7e09cd5c220e67326d6f58013cd5a19cff0893c8587e2bb0ab48549245b74",
+  "started_utc": "2026-09-22T07:33:48Z"
+}

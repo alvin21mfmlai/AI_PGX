@@ -1,0 +1,33 @@
+{
+  "status": "incomplete",
+  "backend": "cuda",
+  "paired_overhead_percent": [],
+  "median_overhead_percent": null,
+  "overhead_target_met": null,
+  "interpretation": "Negative overhead is apparent speedup/noise; three pairs are descriptive, not causal proof.",
+  "energy_boundary": "nvidia-smi power.draw sensor domain; not wall energy, not idle-subtracted",
+  "cases": [
+    {
+      "case": "p1-off",
+      "pair": 1,
+      "observed": false,
+      "start": 1217898.16167186,
+      "end": 1217928.275435663,
+      "operations": 19200,
+      "wall_seconds": 30.113763803150505,
+      "ops_per_second": 637.5822074420101,
+      "median_block_tflops": 87.59341255834049,
+      "block_cv": 0.004213885262552745,
+      "blocks": 75,
+      "min_available_gib": null,
+      "max_query_seconds": null,
+      "energy_j": null,
+      "coverage": 0.0,
+      "valid_power_samples": 0,
+      "energy_status": "unavailable: missing/short/invalid power trace",
+      "joules_per_matmul": null,
+      "torch_peak_allocated_bytes": 193069056,
+      "torch_peak_reserved_bytes": 207618048
+    }
+  ]
+}
