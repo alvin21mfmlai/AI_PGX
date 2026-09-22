@@ -57,7 +57,7 @@ export function codeBlock(code, lang, { fileName = '', lines = true, collapsedAf
     <span class="code__meta">${n} line${n === 1 ? '' : 's'}</span>
     <button class="code__copy" type="button" data-copy aria-label="Copy code">Copy</button>
   </div>
-  <pre class="${lines ? 'line-numbers' : ''}"><code class="language-${esc(l)}">${html}</code></pre>
+  <pre tabindex="0"><code class="language-${esc(l)}">${html}</code></pre>
   ${collapsible ? `<button class="code__expand" type="button" data-expand aria-expanded="false">Show all ${n} lines</button>` : ''}
 </div>`;
 }

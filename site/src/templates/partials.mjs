@@ -28,7 +28,7 @@ export function tagList(tags, cls = 'tags') {
 export function statDecimals(v) {
   const n = Number(v);
   if (Number.isInteger(n) || Math.abs(n) >= 100) return 0;
-  return Math.abs(n) >= 1 ? 1 : 3;
+  return Math.abs(n) >= 1 ? 1 : 2;
 }
 
 export function statTile({ label, value, unit = '', status = '', numeric = false, citeHtml = '' }, { size = '' } = {}) {
@@ -109,14 +109,14 @@ export function fileTable(files, { max = 60, hrefLabel = 'GitHub' } = {}) {
   if (!files?.length) return '<p class="muted">No files.</p>';
   const rows = files.slice(0, max).map((f) => `<tr><td class="mono"><a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">${esc(f.rel)}</a></td><td class="num">${esc(formatBytes(f.size))}</td></tr>`).join('');
   const more = files.length > max ? `<tr><td colspan="2" class="muted">… and ${files.length - max} more files in the repository</td></tr>` : '';
-  return `<div class="tbl-wrap"><table class="files"><thead><tr><th scope="col">File (opens on ${esc(hrefLabel)})</th><th scope="col" class="num">Size</th></tr></thead><tbody>${rows}${more}</tbody></table></div>`;
+  return `<div class="tbl-wrap" tabindex="0" role="group" aria-label="File list (scrolls horizontally)"><table class="files"><thead><tr><th scope="col">File (opens on ${esc(hrefLabel)})</th><th scope="col" class="num">Size</th></tr></thead><tbody>${rows}${more}</tbody></table></div>`;
 }
 
 export function dataTable(header, rows, { caption = '', total = rows.length } = {}) {
   const th = header.map((h) => `<th scope="col">${esc(h)}</th>`).join('');
   const body = rows.map((r) => `<tr>${r.map((c) => `<td class="${/^[-+]?[\d.]+(e[-+]?\d+)?$/i.test(c) ? 'num' : ''}">${esc(fmtCell(c))}</td>`).join('')}</tr>`).join('');
   const note = total > rows.length ? `<p class="muted small">Showing the first ${rows.length} of ${total} rows — download the CSV for the rest.</p>` : '';
-  return `<div class="tbl-wrap">${caption ? `<p class="tbl-cap">${esc(caption)}</p>` : ''}<table class="data"><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>${note}`;
+  return `<div class="tbl-wrap" tabindex="0" role="group" aria-label="Data table (scrolls horizontally)">${caption ? `<p class="tbl-cap">${esc(caption)}</p>` : ''}<table class="data"><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>${note}`;
 }
 
 function fmtCell(c) {

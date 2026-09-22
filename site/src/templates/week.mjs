@@ -20,6 +20,9 @@ export function weekPage({ config, week: w, weeks }) {
   ].filter((s) => s.show);
 
   const archive = r?.archives?.[0];
+  const tocLevels = (w.readme.toc || []).map((t) => t.level);
+  const topLevel = tocLevels.length ? Math.min(...tocLevels) : 0;
+  const readmeSub = (w.readme.toc || []).filter((t) => t.level === topLevel).slice(0, 12).map((t) => { const text = t.text.replace(/^\d+[.)]\s*/, '').replace(/\s+[—–-]\s+.*$/, ''); return { ...t, text: text.length > 44 ? text.slice(0, 42).trim() + '…' : text }; });
   const hero = `
 <header class="whero">
   <div class="hero__bg hero__bg--week" aria-hidden="true"><span class="orb orb--a"></span><span class="orb orb--b"></span><span class="grid"></span></div>
@@ -29,6 +32,7 @@ export function weekPage({ config, week: w, weeks }) {
     <h1 class="whero__title rv"><span class="grad">${esc(w.title)}</span></h1>
     ${w.subtitle ? `<p class="whero__sub rv">${esc(w.subtitle)}</p>` : ''}
     <p class="whero__lede rv">${esc(w.summaryText)}</p>
+    ${w.hypothesis ? `<div class="callout rv"><span class="callout__k">Hypothesis</span><p>${esc(w.hypothesis)}</p></div>` : ''}
     <div class="rv">${tagList(w.tags)}</div>
     ${w.highlights?.length ? `<div class="stats stats--row rv">${w.highlights.slice(0, 4).map((h) => statTile(h, { size: 'md' })).join('')}</div>` : ''}
     <div class="hero__cta rv">
@@ -57,22 +61,31 @@ export function weekPage({ config, week: w, weeks }) {
     const referenced = new Set([...r.summaryHtml.matchAll(/src="([^"]+)"/g)].map((m) => m[1]));
     const extraImages = r.images.filter((im) => !referenced.has(im.src));
     const chartedFiles = new Set(r.charts.flatMap((c) => c.files));
-    const otherTables = r.tables.filter((t) => !chartedFiles.has(t.rel));
+    const otherTables = r.tables.filter((t) => !chartedFiles.has(t.rel) && !(r.primaryTable && t.rel === r.primaryTable.rel));
+    const archive = r.archives[0];
+    const statusBadge = r.status ? `<span class="badge badge--${r.complete ? 'good' : 'warn'}">${r.complete ? icon('check') : icon('warn')} ${esc(r.status)}</span>` : '';
+    const panel = (rows, title, url) => rows.length ? `<div class="kv rv"><div class="kv__head"><h3>${esc(title)}</h3>${url ? `<a class="src" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(url.split('/').pop())} ${icon('link')}</a>` : ''}</div><dl>${rows.map((row) => `<div class="${row.long ? 'kv__long' : ''}"><dt>${esc(row.label)}</dt><dd class="${row.mono ? 'mono' : ''}${row.truncate ? ' trunc' : ''}${row.muted ? ' muted' : ''}${row.status ? ` is-${row.status}` : ''}" ${row.truncate ? `title="${esc(row.text)}"` : ''}>${row.status === 'good' ? icon('check', 'ico ico--good') : row.status === 'warn' ? icon('warn', 'ico ico--warn') : ''}${esc(row.text)}</dd></div>`).join('')}</dl></div>` : '';
     results = `
 <section class="wsec" id="results" aria-labelledby="results-h">
   <div class="wsec__head"><h2 id="results-h">Results</h2><a class="src" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">Session folder ${icon('link')}</a></div>
   <div class="session">
     <div><span class="session__k">Session</span><code>${esc(r.session)}</code></div>
+    ${r.profile ? `<div><span class="session__k">Profile</span><span class="badge">${esc(r.profile)}</span></div>` : ''}
+    ${statusBadge ? `<div><span class="session__k">Status</span>${statusBadge}</div>` : ''}
     ${r.stamp ? `<div><span class="session__k">Captured</span><time datetime="${esc(r.stamp)}">${esc(formatDate(r.stamp, { long: true }))} UTC</time></div>` : ''}
-    ${r.sessionsCount > 1 ? `<div><span class="session__k">Sessions in repo</span>${r.sessionsCount} (latest shown)</div>` : ''}
-    ${r.checksums ? `<div><span class="session__k">Integrity</span><a href="${esc(r.checksums)}" target="_blank" rel="noopener noreferrer">SHA256SUMS</a></div>` : ''}
-    ${archive ? `<div><span class="session__k">Archive</span><a href="${esc(archive.url)}">${icon('download')} ${esc(archive.rel.split('/').pop())}</a>${archive.sha ? ` · <a href="${esc(archive.sha)}">.sha256</a>` : ''}</div>` : ''}
+    ${r.checksums ? `<div><span class="session__k">Integrity</span><a href="${esc(r.checksums)}" target="_blank" rel="noopener noreferrer">${esc(r.checksums.split('/').pop())}</a></div>` : ''}
+    ${archive ? `<div><span class="session__k">Archive</span><a href="${esc(archive.url)}">${icon('download')} ${esc(archive.rel.split('/').pop())}</a> (${esc(formatBytes(archive.size))})${archive.sha ? ` · <a href="${esc(archive.sha)}">.sha256</a>` : ''}</div>` : ''}
   </div>
+  ${r.sessions.length > 1 ? `<details class="disc"><summary>All ${r.sessions.length} runs recorded for this week <span class="muted">(the page leads with the most complete one)</span></summary><div class="tbl-wrap" tabindex="0" role="group" aria-label="Runs table (scrolls horizontally)"><table class="data"><thead><tr><th scope="col">Run</th><th scope="col">Profile</th><th scope="col">Status</th><th scope="col" class="num">Cases</th><th scope="col">Captured</th></tr></thead><tbody>${r.sessions.map((sn) => `<tr${sn.lead ? ' class="is-lead"' : ''}><td class="mono"><a href="${esc(sn.url)}" target="_blank" rel="noopener noreferrer">${esc(sn.name)}</a>${sn.lead ? ' <span class="badge badge--good">shown</span>' : ''}</td><td>${esc(sn.profile)}</td><td>${esc(sn.status || '—')}</td><td class="num">${sn.cases || '—'}</td><td>${sn.stamp ? esc(formatDate(sn.stamp)) : '—'}</td></tr>`).join('')}</tbody></table></div></details>` : ''}
   ${r.summaryHtml ? `<div class="md md--summary">${r.summaryHtml}</div>` : ''}
-  ${r.charts.length ? `<h3 class="wsub">Interactive charts <span class="muted small">drawn from the CSV files in the session — hover or focus for exact values</span></h3>
+  ${(r.summaryPanel.length || r.configPanel.length) ? `<div class="kvgrid">${panel(r.summaryPanel, 'Run summary', r.summaryUrl)}${panel(r.configPanel, 'Configuration', r.configUrl)}</div>` : ''}
+  ${r.primaryTable && r.primaryTable.header.length ? `<h3 class="wsub">Results table <span class="muted small">${esc(r.primaryTable.rel)} · ${r.primaryTable.total} rows</span></h3>${dataTable(r.primaryTable.header, r.primaryTable.rows, { total: r.primaryTable.total })}<p class="small chart-links"><a href="${esc(r.primaryTable.raw)}">${icon('download')} Download CSV</a><a href="${esc(r.primaryTable.url)}" target="_blank" rel="noopener noreferrer">View on GitHub</a></p>` : ''}
+  ${r.charts.length ? `<h3 class="wsub">Interactive charts <span class="muted small">drawn from the data files in the session — hover or focus for exact values${r.skipped ? `; ${r.skipped} lower-priority series available in the table views` : ''}</span></h3>
   <div class="charts">${r.charts.map((c) => chartCard(c, r)).join('')}</div>` : ''}
+  ${r.dashboards.length ? `<div class="dash rv">${icon('spark')}<div><strong>This run generated its own dashboard.</strong> <span class="muted">A static page produced by the week's pipeline, hosted here unchanged.</span></div>${r.dashboards.map((d) => `<a class="btn btn--ghost btn--sm" href="${esc(d.src)}" target="_blank" rel="noopener">Open ${esc(d.name)} ${icon('arrow')}</a>`).join('')}</div>` : ''}
   ${extraImages.length ? `<h3 class="wsub">Figures</h3><div class="gallery">${extraImages.map((im) => `<figure class="md-fig"><a href="${esc(im.src)}" target="_blank" rel="noopener"><img src="${esc(im.src)}" alt="${esc(im.name)}"${im.width ? ` width="${im.width}" height="${im.height}"` : ''} loading="lazy" decoding="async"></a><figcaption>${esc(im.rel.split('/').slice(-1)[0])}</figcaption></figure>`).join('')}</div>` : ''}
-  ${otherTables.length ? `<h3 class="wsub">Other data files</h3>${otherTables.map((t) => `<details class="disc"><summary>${esc(t.rel)} <span class="muted">(${t.total} rows)</span></summary>${dataTable(t.header, t.rows, { total: t.total })}<p class="small"><a href="${esc(t.raw)}">${icon('download')} Download CSV</a> · <a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">View on GitHub</a></p></details>`).join('')}` : ''}
+  ${otherTables.length ? `<h3 class="wsub">Other data files</h3>${otherTables.map((t) => `<details class="disc"><summary>${esc(t.rel)} <span class="muted">(${t.total} rows)</span></summary>${dataTable(t.header, t.rows, { total: t.total })}<p class="small chart-links"><a href="${esc(t.raw)}">${icon('download')} Download</a><a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">View on GitHub</a></p></details>`).join('')}` : ''}
+  ${r.archives.length > 1 ? `<details class="disc"><summary>Exports and archives (${r.archives.length})</summary>${fileTable(r.archives.map((a) => ({ rel: a.rel, size: a.size, url: a.url })), { hrefLabel: 'GitHub (raw download)' })}</details>` : ''}
 </section>`;
   }
 
@@ -81,12 +94,12 @@ export function weekPage({ config, week: w, weeks }) {
     const groups = [...new Set(r.env.items.map((i) => i.group))];
     environment = `
 <section class="wsec" id="environment" aria-labelledby="env-h">
-  <div class="wsec__head"><h2 id="env-h">Environment &amp; provenance</h2><a class="src" href="${esc(r.url)}/env" target="_blank" rel="noopener noreferrer">env/ on GitHub ${icon('link')}</a></div>
+  <div class="wsec__head"><h2 id="env-h">Environment &amp; provenance</h2><a class="src" href="${esc(r.envUrl)}" target="_blank" rel="noopener noreferrer">${esc(r.envUrl.split('/').slice(-1)[0])}/ on GitHub ${icon('link')}</a></div>
   <p class="muted">Captured automatically with the run, so anyone can see exactly which driver, container and host produced these numbers.</p>
   <div class="envgrid">
     ${groups.map((g) => `<div class="envcard rv"><h3>${esc(g)}</h3><dl>${r.env.items.filter((i) => i.group === g).map((i) => `<div><dt>${esc(i.label)}</dt><dd class="${i.mono ? 'mono' : ''}${i.truncate ? ' trunc' : ''}" ${i.truncate ? `title="${esc(i.value)}"` : ''}>${i.href ? `<a href="${esc(i.href)}" target="_blank" rel="noopener noreferrer">${esc(i.hrefLabel || i.value)}</a>` : esc(i.value)}</dd></div>`).join('')}</dl></div>`).join('')}
   </div>
-  ${r.logs.length ? `<details class="disc"><summary>Run logs (${r.logs.length})</summary>${fileTable(r.logs.map((l) => ({ rel: l.rel.split('/').slice(-1)[0], size: l.size, url: l.url })))}</details>` : ''}
+  ${r.logs.length ? `<details class="disc"><summary>Run logs (${r.logs.length})</summary>${fileTable(r.logs.map((l) => ({ rel: l.name, size: l.size, url: l.url })))}</details>` : ''}
 </section>`;
   }
 
@@ -132,7 +145,7 @@ export function weekPage({ config, week: w, weeks }) {
 <aside class="week__aside" aria-label="Page navigation">
   <div class="aside__box">
     <p class="aside__h">On this page</p>
-    <ol class="aside__toc">${sections.map((s) => `<li><a href="#${esc(s.id)}">${esc(s.label)}</a></li>`).join('')}</ol>
+    <ol class="aside__toc">${sections.map((s) => `<li><a href="#${esc(s.id)}">${esc(s.label)}</a>${s.id === 'overview' && readmeSub.length ? `<ol class="aside__sub">${readmeSub.map((t) => `<li><a href="#${esc(t.id)}">${esc(t.text)}</a></li>`).join('')}</ol>` : ''}</li>`).join('')}</ol>
   </div>
   <div class="aside__box">
     <p class="aside__h">Run it yourself</p>
@@ -155,7 +168,9 @@ export function weekPage({ config, week: w, weeks }) {
 function shortDocLabel(d) {
   const t = String(d.title || d.rel);
   if (/experiment/i.test(t)) return 'Details';
-  return t.length > 18 ? d.rel.replace(/^docs\//, '').replace(/\.md$/, '') : t;
+  if (t.length <= 18) return t;
+  const base = d.rel.replace(/^docs\//, '').replace(/\.md$/, '').replace(/[-_]+/g, ' ');
+  return base.charAt(0).toUpperCase() + base.slice(1).toLowerCase();
 }
 
 function chartCard(c, r) {

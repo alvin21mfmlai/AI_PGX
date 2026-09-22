@@ -1,0 +1,3 @@
+# Build output — Vercel (and the GitHub Pages workflow) regenerate it on every push.
+dist/
+node_modules/

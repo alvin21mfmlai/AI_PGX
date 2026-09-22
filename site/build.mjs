@@ -68,7 +68,15 @@ for (const w of weeks) {
     jsonLd: { '@context': 'https://schema.org', '@type': 'TechArticle', headline: w.pageTitle, description: w.summaryText, datePublished: w.date || undefined, dateModified: w.updated || undefined, author: { '@type': 'Person', name: config.author.name }, url: config.site.url ? `${config.site.url}/${w.url}` : undefined, keywords: w.tags.join(', ') },
   });
   writeFile(path.join(dir, 'index.html'), html);
-  for (const a of w.assets) copyFile(a.full, path.join(dir, 'files', a.rel));
+  for (const a of w.assets) {
+    const dst = path.join(dir, 'files', a.rel);
+    if (/\.svg$/i.test(a.rel)) {
+      // An SVG without an xmlns declaration does not render when used as an <img>; add it (nothing else is touched).
+      let svg = fs.readFileSync(a.full, 'utf8');
+      if (!/<svg[^>]*\sxmlns=/.test(svg)) svg = svg.replace(/<svg\b/, '<svg xmlns="http://www.w3.org/2000/svg"');
+      writeFile(dst, svg);
+    } else copyFile(a.full, dst);
+  }
 }
 
 // Machine-readable index of weeks

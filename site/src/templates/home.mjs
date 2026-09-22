@@ -82,13 +82,19 @@ export function homePage({ config, weeks, refIndex }) {
     <h2 id="roadmap-title">Roadmap</h2>
     <p class="lede">${esc(prog.roadmapIntro)}</p>
     <ol class="road">
-      ${(prog.roadmap || []).map((r, i) => `<li class="road__item road__item--${esc(r.status || 'planned')} rv" style="--i:${i}">
+      ${(prog.roadmap || []).map((r, i) => {
+        const wk = r.week ? weeks.find((w) => w.num === r.week) : null;
+        const status = wk ? 'done' : (r.status === 'done' ? 'planned' : (r.status || 'planned'));
+        const pill = status === 'done'
+          ? (wk ? `<a class="pill pill--done" href="${esc(wk.url)}">${icon('check')} ${esc(prog.label)} ${String(wk.num).padStart(2, '0')}</a>` : `<span class="pill pill--done">${icon('check')} done</span>`)
+          : `<span class="pill pill--${esc(status)}">${status === 'active' ? 'in progress' : r.week ? `planned · ${esc(prog.label)} ${String(r.week).padStart(2, '0')}` : 'planned'}</span>`;
+        return `<li class="road__item road__item--${esc(status)} rv" style="--i:${i}">
         <span class="road__dot" aria-hidden="true"></span>
         <div class="road__body">
-          <div class="road__head"><h3>${esc(r.title)}</h3><span class="pill pill--${esc(r.status || 'planned')}">${r.status === 'done' ? `${icon('check')} ${r.week ? `${esc(prog.label)} ${String(r.week).padStart(2, '0')}` : 'done'}` : r.status === 'active' ? 'in progress' : 'planned'}</span></div>
-          <p>${esc(r.blurb)}</p>
+          <div class="road__head"><h3>${wk ? `<a href="${esc(wk.url)}">${esc(r.title)}</a>` : esc(r.title)}</h3>${pill}</div>
+          <p>${esc(r.blurb)}${wk ? ` <span class="muted">— shipped as “${esc(wk.title)}”.</span>` : ''}</p>
         </div>
-      </li>`).join('')}
+      </li>`; }).join('')}
     </ol>
   </div>
 </section>`;

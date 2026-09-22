@@ -55,13 +55,16 @@ build discovers it and, from the files that are already produced by your pipelin
 | Summary (cards, meta description, RSS) | the first paragraph of `README.md` |
 | Overview section | the rest of `README.md`, rendered (links to files in the folder are resolved to GitHub or to the page) |
 | Details sections | every `docs/*.md` |
-| Date | the newest `results/<timestamp>/` session; falls back to the folder's first commit date, or `week.json` |
-| Results section | `results/<latest session>/summary.md`, every image in that session, and a chart for every CSV that can be drawn |
-| Interactive charts | CSVs with a `trial`/`step`/`epoch`/timestamp column become line charts (files that differ only by `runNN` are overlaid as series); small tables keyed by a name become bar charts; everything else gets a table view |
-| Highlights (cards, hero) | `results/<session>/runs.csv`: number of rows, `*_pass` booleans, the median of any `median_*` column |
-| Environment & provenance | `results/<session>/env/` — `gpu.txt`, `framework.json`, `os.txt`, `host.json`, `cpu.txt`, `memory.txt`, `storage.txt`, `docker.txt`, `runtime.txt`, `image-lock.json`, `source-git.json` |
-| Source code viewer | `*.sh`, `*.py`, `*.json`, `*.yaml`, `*.toml` … in the folder (not under `results/`) |
-| Tags | matched against `tagRules` in `site.config.json` |
+| Subtitle / hypothesis | a bold opening line under the title becomes the subtitle; a table row labelled *Objective* becomes the summary and one labelled *…hypothesis* becomes a callout in the header |
+| Date | the lead results session's timestamp; falls back to the folder's first commit date, or `week.json` |
+| Results session | every `results/<timestamp>[-profile]/` folder is a run (`20260911T133621.601983Z` and `20260922T073443…Z-full` both work). The page leads with the most complete one — `status.json` says *complete*, a `full` profile beats `cpu`/`smoke`, then the newest — and lists all the others |
+| Results section | `summary.md` rendered, or `summary.json` and `config.json` shown as key/value panels; `summary.csv` / `runs.csv` / `cases.csv` shown as the results table; every image (PNG/SVG) in the session; any `dashboard.html` the run produced, hosted as-is |
+| Interactive charts | CSV, TSV and JSON Lines files. Files in one folder with the same columns become one chart with a series per file (`p1-on-blocks.jsonl`, `p1-off-blocks.jsonl`, … or `…-run01.csv`, `…-run02.csv`). `trial`/`step`/`epoch`/timestamp columns are the x-axis; absolute clocks (`mono_start`, `utc`) become *elapsed seconds* so cases overlay; small tables keyed by a name become bar charts grouped by unit. At most ten charts, headline metrics (TFLOP/s, tokens/s, power, energy…) first; the rest keep a table view |
+| Highlights (cards, hero) | `summary.json` (case count, `median_*`/`*_percent` numbers, `*_met`/`*_pass` booleans, `status`) and the results table (row count, median of any `median_*` column, pass columns) |
+| Environment & provenance | Week 01 style `results/<session>/env/*` and/or Week 02 style `results/<session>/environment.json` + `manifests/<timestamp>/` (`host.txt`, `container.txt`, `nvidia-smi*.txt`, `image.lock`) + `SOURCE_SHA256SUMS.txt`. GPU UUIDs, serial numbers and hostnames are never copied onto the page |
+| Archives | `results/*.tar.gz` and `exports/*.tar.gz` (with `.sha256` companions), the lead session's first |
+| Source code viewer | `*.sh`, `*.py`, `*.json`, `*.yaml`, `*.toml`, `*.txt` … in the folder (not under `results/`, `manifests/` or `exports/`) |
+| Tags | scored against `tagRules` in `site.config.json` (mentions in the title and opening count four times over, so a playbook that merely lists future topics is not tagged with all of them) |
 | References | every external link in the week's markdown, plus canonical links to the folder, the session and the archive |
 
 Images and small PDFs are copied next to the page so the write-up renders offline from GitHub;
@@ -91,8 +94,9 @@ Everything on the landing page that is not derived from the week folders lives i
 
 - `site` — name, tagline, description, theme colour, optional `url`.
 - `repo` — owner, repository name and branch used for every GitHub link.
-- `programme` — the "Week" label, the total (52), the cadence sentence and the roadmap items
-  (`status`: `done`, `active` or `planned`; `week` links a done item to its week number).
+- `programme` — the "Week" label, the total (52), the cadence sentence and the roadmap items.
+  Give an item a `week` number and it turns green and links to that week's page automatically
+  the moment the folder exists; until then it shows as *planned · Week NN*.
 - `author` — name, role, location, bio and links (a link with an empty `url` is hidden — fill in
   LinkedIn and Google Scholar when you want them shown).
 - `machine` — headline numbers, the specification rows and the note under them. Each row cites
@@ -115,8 +119,11 @@ Pages source to *GitHub Actions* and push. The workflow builds with the correct 
 
 - **A week is missing** — the folder name must match `WEEK` + number, and the build only
   reads the `main` branch that Vercel deploys.
-- **No charts for a CSV** — a CSV needs at least two rows and one numeric column that varies.
-  Constant columns (like a seed) are skipped on purpose; the table view is always available.
+- **No charts for a data file** — a CSV/JSONL needs at least two rows and one numeric column that
+  varies. Constant columns (like a seed), id-like columns and time-stamp columns are skipped on
+  purpose; the table view is always available.
+- **The wrong run is shown** — the lead run is the most complete one, not the newest. Rename a
+  profile (`…Z-full`) or add `status.json` with `{"status": "complete"}` to steer it.
 - **Dates look wrong** — the date comes from the results session timestamp. Add
   `"date": "YYYY-MM-DD"` to `week.json` to pin it.
 - **Build log** — the build prints the folders it found and the number of files written; run it

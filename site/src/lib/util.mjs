@@ -104,14 +104,16 @@ export function isoDate(d) {
   return Number.isNaN(x.getTime()) ? '' : x.toISOString().slice(0, 10);
 }
 
-// Session folder names look like 20260911T133621.601983Z — turn them into ISO timestamps.
-export function parseSessionStamp(name) {
-  const m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(?:\.(\d+))?Z?$/.exec(String(name));
+// Session / manifest folder names: "20260911T133621.601983Z" or "20260922T073348393671838Z-full" → ISO timestamp + profile suffix.
+export function parseStamp(name) {
+  const m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})\.?(\d*)Z?(?:[-_](.+))?$/.exec(String(name).trim());
   if (!m) return null;
   const iso = `${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}${m[7] ? '.' + m[7].slice(0, 3) : ''}Z`;
   const d = new Date(iso);
-  return Number.isNaN(d.getTime()) ? null : d.toISOString();
+  if (Number.isNaN(d.getTime())) return null;
+  return { iso: d.toISOString(), profile: (m[8] || '').trim() };
 }
+export const parseSessionStamp = (name) => parseStamp(name)?.iso || null;
 
 export function relPath(fromDepth, target) {
   // Path from a page nested `fromDepth` directories deep to a root-relative target.

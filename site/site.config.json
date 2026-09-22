@@ -1,6 +1,6 @@
 {
   "site": {
-    "name": "AI Adventures with ThinkStation PGX",
+    "name": "PGX_AI_Adventures",
     "shortName": "PGX_AI",
     "tagline": "Weekly AI prototypes and experiments on a desk-sized Grace Blackwell workstation.",
     "description": "A public lab notebook: one AI prototype or experiment every week on a Lenovo ThinkStation PGX (NVIDIA GB10 Grace Blackwell, 128 GB unified memory), with reproducible code, raw results and provenance for every run.",
@@ -17,17 +17,27 @@
     "label": "Week",
     "totalWeeks": 52,
     "cadence": "One experiment folder lands in the repository every week.",
-    "roadmapIntro": "Week 01 set the baseline. The themes below are the planned direction of travel — the order and scope may change as the experiments teach me things.",
+    "roadmapIntro": "The programme runs 52 weeks: 26 general AI-engineering weeks alternating with 26 signature research weeks. Items link to their week once it ships; the order and scope of the rest may change as the experiments teach me things.",
     "roadmap": [
       {
         "title": "Platform baseline",
         "blurb": "Reproducible PyTorch throughput and correctness on the GB10, pinned to a container digest.",
-        "status": "done",
         "week": 1
       },
       {
-        "title": "Local LLMs",
-        "blurb": "Serving open-weight models from the 128 GB unified memory: quantisation, context length and tokens per second.",
+        "title": "GPU observability and energy per result",
+        "blurb": "Paired monitoring-on/off runs to measure what observing the GPU costs, plus sensor-domain energy per matrix multiply.",
+        "week": 2
+      },
+      {
+        "title": "Arm64 / SM121 framework compatibility atlas",
+        "blurb": "Which frameworks, wheels and kernels actually run natively on the GB10's compute-capability-12.1 GPU.",
+        "week": 3,
+        "status": "planned"
+      },
+      {
+        "title": "Local LLM serving",
+        "blurb": "Open-weight models from the 128 GB unified memory: quantisation, context length and tokens per second.",
         "status": "planned"
       },
       {
@@ -46,13 +56,13 @@
         "status": "planned"
       },
       {
-        "title": "Time-series models",
+        "title": "Time-series models and digital twins",
         "blurb": "Forecasting and anomaly detection on sensor data with modern sequence models.",
         "status": "planned"
       },
       {
         "title": "AI security",
-        "blurb": "Privacy-preserving inference, adversarial robustness and confidential pipelines — my research home turf.",
+        "blurb": "Confidential RAG, fully homomorphic encryption, cyber-defence and adversarial robustness — the signature research weeks.",
         "status": "planned"
       }
     ]
@@ -60,8 +70,9 @@
   "author": {
     "name": "Alvin",
     "handle": "alvin21mfmlai",
+    "role": "Privacy-preserving AI and cybersecurity researcher",
     "location": "Singapore",
-    "bio": "I enjoy AI related research and experiments. I am currently pursuing new foundations in domain constrained LLM/VLM for engineering applications which include, but not limited to, time-series foundational models, LLM-based time series analysis, and confidential retrieval controls for RAG.",
+    "bio": "I work on homomorphic encryption, confidential retrieval-augmented generation pipelines and privacy-preserving inference. PGX_AI_Adventures is my public, weekly lab notebook: every experiment runs on the ThinkStation PGX on my desk, and everything needed to reproduce it — code, container digest, raw numbers and environment inventory — is published alongside the write-up.",
     "links": [
       {
         "label": "GitHub",
@@ -70,12 +81,12 @@
       },
       {
         "label": "LinkedIn",
-        "url": "https://www.linkedin.com/in/alvinchew21/",
+        "url": "",
         "icon": "linkedin"
       },
       {
         "label": "Google Scholar",
-        "url": "https://scholar.google.com.sg/citations?user=z-CILqgAAAAJ&hl=en",
+        "url": "",
         "icon": "scholar"
       }
     ]
@@ -346,47 +357,21 @@
   ],
   "tagRules": [
     {
-      "tag": "PyTorch",
+      "tag": "Observability",
       "match": [
-        "pytorch",
-        "torch"
+        "observab",
+        "telemetry",
+        "monitoring overhead",
+        "nvidia-smi"
       ]
     },
     {
-      "tag": "Benchmark",
+      "tag": "Energy",
       "match": [
-        "benchmark",
-        "throughput",
-        "tflop"
-      ]
-    },
-    {
-      "tag": "BF16",
-      "match": [
-        "bf16",
-        "bfloat16"
-      ]
-    },
-    {
-      "tag": "Docker",
-      "match": [
-        "docker",
-        "container"
-      ]
-    },
-    {
-      "tag": "CUDA",
-      "match": [
-        "cuda"
-      ]
-    },
-    {
-      "tag": "Reproducibility",
-      "match": [
-        "reproducib",
-        "provenance",
-        "checksum",
-        "sha256"
+        "energy",
+        "joule",
+        "power draw",
+        "watt"
       ]
     },
     {
@@ -415,8 +400,7 @@
       "match": [
         "fine-tun",
         "finetun",
-        "lora",
-        "training"
+        "lora"
       ]
     },
     {
@@ -428,17 +412,19 @@
     {
       "tag": "RAG",
       "match": [
-        "rag",
         "retrieval-augmented",
         "retrieval augmented",
         "embedding",
-        "vector"
+        "vector index",
+        "vector search"
       ]
     },
     {
       "tag": "Agents",
       "match": [
-        "agent"
+        "agentic",
+        "tool-using agent",
+        "agents"
       ]
     },
     {
@@ -447,18 +433,16 @@
         "time-series",
         "time series",
         "forecast",
-        "anomaly"
+        "anomaly detection"
       ]
     },
     {
       "tag": "Security",
       "match": [
-        "security",
         "adversarial",
-        "privacy",
-        "encryption",
         "homomorphic",
-        "confidential"
+        "confidential",
+        "cyber"
       ]
     },
     {
@@ -466,7 +450,6 @@
       "match": [
         "diffusion",
         "image generation",
-        "vision",
         "comfyui"
       ]
     },
@@ -479,6 +462,59 @@
         "fp8",
         "int8",
         "gguf"
+      ]
+    },
+    {
+      "tag": "Compatibility",
+      "match": [
+        "compatibility atlas",
+        "wheel",
+        "sm121",
+        "sm_121"
+      ]
+    },
+    {
+      "tag": "Benchmark",
+      "match": [
+        "benchmark",
+        "throughput",
+        "tflop"
+      ]
+    },
+    {
+      "tag": "Reproducibility",
+      "match": [
+        "reproducib",
+        "provenance",
+        "checksum",
+        "sha256"
+      ]
+    },
+    {
+      "tag": "PyTorch",
+      "match": [
+        "pytorch",
+        "torch"
+      ]
+    },
+    {
+      "tag": "BF16",
+      "match": [
+        "bf16",
+        "bfloat16"
+      ]
+    },
+    {
+      "tag": "CUDA",
+      "match": [
+        "cuda"
+      ]
+    },
+    {
+      "tag": "Docker",
+      "match": [
+        "docker",
+        "container"
       ]
     }
   ]

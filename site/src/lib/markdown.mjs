@@ -23,6 +23,8 @@ export function renderMarkdown(src, opts = {}) {
   const toc = [];
   const refs = [];
   const images = [];
+  const paragraphs = [];
+  const tables = [];
   const ids = new Map();
   let firstH1 = null;
   let firstParagraph = null;
@@ -53,15 +55,18 @@ export function renderMarkdown(src, opts = {}) {
       },
       paragraph({ tokens }) {
         const html = this.parser.parseInline(tokens);
-        if (firstParagraph == null) firstParagraph = this.parser.parseInline(tokens, this.parser.textRenderer).trim();
+        const text = this.parser.parseInline(tokens, this.parser.textRenderer).trim();
+        if (firstParagraph == null) firstParagraph = text;
+        paragraphs.push({ text, onlyStrong: tokens.filter((t) => t.type !== 'space' && !(t.type === 'text' && !t.text.trim())).every((t) => t.type === 'strong') });
         return `<p>${html}</p>\n`;
       },
       code({ text, lang }) {
         const l = normalizeLang((lang || '').split(/\s+/)[0]);
         const html = highlight(text, l);
-        return `<div class="code code--md" data-lang="${esc(l)}"><div class="code__bar"><span class="code__name">${esc(l || 'text')}</span><button class="code__copy" type="button" data-copy aria-label="Copy code">Copy</button></div><pre><code class="language-${esc(l)}">${html}</code></pre></div>\n`;
+        return `<div class="code code--md" data-lang="${esc(l)}"><div class="code__bar"><span class="code__name">${esc(l || 'text')}</span><button class="code__copy" type="button" data-copy aria-label="Copy code">Copy</button></div><pre tabindex="0"><code class="language-${esc(l)}">${html}</code></pre></div>\n`;
       },
       table(token) {
+        tables.push({ header: token.header.map((c) => this.parser.parseInline(c.tokens, this.parser.textRenderer).trim()), rows: token.rows.map((r) => r.map((c) => this.parser.parseInline(c.tokens, this.parser.textRenderer).trim())) });
         let head = '';
         for (const cell of token.header) head += this.tablecell(cell);
         let body = '';
@@ -70,7 +75,7 @@ export function renderMarkdown(src, opts = {}) {
           for (const cell of row) cells += this.tablecell(cell);
           body += `<tr>\n${cells}</tr>\n`;
         }
-        return `<div class="tbl-wrap"><table>\n<thead>\n<tr>\n${head}</tr>\n</thead>\n${body ? `<tbody>${body}</tbody>` : ''}</table></div>\n`;
+        return `<div class="tbl-wrap" tabindex="0" role="group" aria-label="Table (scrolls horizontally)"><table>\n<thead>\n<tr>\n${head}</tr>\n</thead>\n${body ? `<tbody>${body}</tbody>` : ''}</table></div>\n`;
       },
       tablecell(cell) {
         const content = this.parser.parseInline(cell.tokens);
@@ -103,7 +108,7 @@ export function renderMarkdown(src, opts = {}) {
   });
 
   const html = md.parse(src || '');
-  return { html, toc, refs, images, title: firstH1, summary: firstParagraph };
+  return { html, toc, refs, images, paragraphs, tables, title: firstH1, summary: firstParagraph };
 }
 
 // Convert markdown to plain text (for meta descriptions and search snippets).
