@@ -228,7 +228,7 @@
     "steps": [
       {
         "title": "One command",
-        "blurb": "Each week folder ships a runner script. Clone the repository on the PGX and run it — no manual setup, no GUI."
+        "blurb": "Each week folder ships a runner script. Clone the repository on the PGX and run it."
       },
       {
         "title": "Pinned environment",
@@ -236,7 +236,7 @@
       },
       {
         "title": "Repetitions, not anecdotes",
-        "blurb": "Benchmarks repeat the measurement with warm-ups and multiple timed trials; variability is reported, never hidden."
+        "blurb": "Benchmarks repeat the measurement with warm-ups and multiple timed trials. Note that the variability is reported, never hidden."
       },
       {
         "title": "Provenance on disk",
