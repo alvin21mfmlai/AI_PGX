@@ -1,6 +1,6 @@
 {
   "site": {
-    "name": "PGX_AI_Adventures",
+    "name": "PGX_AI Adventures",
     "shortName": "PGX_AI",
     "tagline": "Weekly AI prototypes and experiments on a desk-sized Grace Blackwell workstation.",
     "description": "A public lab notebook: one AI prototype or experiment every week on a Lenovo ThinkStation PGX (NVIDIA GB10 Grace Blackwell, 128 GB unified memory), with reproducible code, raw results and provenance for every run.",
@@ -17,7 +17,7 @@
     "label": "Week",
     "totalWeeks": 52,
     "cadence": "One experiment folder lands in the repository every week.",
-    "roadmapIntro": "The programme runs 52 weeks: 26 general AI-engineering weeks alternating with 26 signature research weeks. Items link to their week once it ships; the order and scope of the rest may change as the experiments teach me things.",
+    "roadmapIntro": "The programme runs 52 weeks: 26 general AI-engineering weeks alternating with 26 signature research weeks.",
     "roadmap": [
       {
         "title": "Platform baseline",
@@ -70,9 +70,9 @@
   "author": {
     "name": "Alvin",
     "handle": "alvin21mfmlai",
-    "role": "Privacy-preserving AI and cybersecurity researcher",
+    "role": "Researcher",
     "location": "Singapore",
-    "bio": "I work on homomorphic encryption, confidential retrieval-augmented generation pipelines and privacy-preserving inference. PGX_AI_Adventures is my public, weekly lab notebook: every experiment runs on the ThinkStation PGX on my desk, and everything needed to reproduce it — code, container digest, raw numbers and environment inventory — is published alongside the write-up.",
+    "bio": "I enjoy AI and cybersecurity research. PGX_AI_Adventures is my public, weekly lab notebook, where every experiment runs on my personal ThinkStation PGX machine, and everything (code, container digest, etc.) needed to reproduce it is published alongside the write-up.",
     "links": [
       {
         "label": "GitHub",
