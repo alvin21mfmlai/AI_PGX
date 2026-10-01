@@ -68,10 +68,11 @@
     ]
   },
   "author": {
-    "name": "Alvin",
+    "name": "Alvin Chew",
     "handle": "alvin21mfmlai",
     "role": "Researcher",
     "location": "Singapore",
+    "nationality": "Singaporean",
     "bio": "I enjoy AI and cybersecurity research. PGX_AI_Adventures is my public, weekly lab notebook, where every experiment runs on my personal ThinkStation PGX machine, and everything (code, container digest, etc.) needed to reproduce it is published alongside the write-up.",
     "links": [
       {
