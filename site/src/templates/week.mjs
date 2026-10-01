@@ -32,6 +32,7 @@ export function weekPage({ config, week: w, weeks }) {
     <h1 class="whero__title rv"><span class="grad">${esc(w.title)}</span></h1>
     ${w.subtitle ? `<p class="whero__sub rv">${esc(w.subtitle)}</p>` : ''}
     <p class="whero__lede rv">${esc(w.summaryText)}</p>
+    ${r ? '' : `<p class="small muted rv">${icon('warn', 'ico ico--warn')} Results pending — the run folder for this week has not been published yet; the write-up below is the plan.</p>`}
     ${w.hypothesis ? `<div class="callout rv"><span class="callout__k">Hypothesis</span><p>${esc(w.hypothesis)}</p></div>` : ''}
     <div class="rv">${tagList(w.tags)}</div>
     ${w.highlights?.length ? `<div class="stats stats--row rv">${w.highlights.slice(0, 4).map((h) => statTile(h, { size: 'md' })).join('')}</div>` : ''}
