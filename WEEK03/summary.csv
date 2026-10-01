@@ -1,6 +1,6 @@
 {
   "host": "127.0.0.1",
-  "port": 54667,
+  "port": 54461,
   "configured_port": 8083,
   "selection": "os_assigned"
 }

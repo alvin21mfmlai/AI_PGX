@@ -1,5 +1,5 @@
 [
-  "~/Desktop/AI_PGX/WEEK03/vendor/llama.cpp/build-cpu/bin/llama-bench",
+  "~/Desktop/AI_PGX/WEEK03/vendor/llama.cpp/build-gpu/bin/llama-bench",
   "-m",
   "~/Desktop/AI_PGX/WEEK03/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
   "-p",
@@ -15,7 +15,7 @@
   "-ub",
   "128",
   "-ngl",
-  "0",
+  "99",
   "-fa",
   "off",
   "-o",
