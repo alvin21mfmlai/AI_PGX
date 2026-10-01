@@ -139,7 +139,7 @@ export function homePage({ config, weeks, refIndex }) {
     <div class="about__card">
       <p class="eyebrow">About the author</p>
       <h2 id="about-title">${esc(a.name)}</h2>
-      <p class="about__role">${esc(a.role)}${a.location ? ` · ${esc(a.location)}` : ''}·${esc(a.nationality)}</p>
+      <p class="about__role">${esc(a.role)}${a.location ? ` · ${esc(a.location)}` : ''} · ${esc(a.nationality)}</p>
       <p>${esc(a.bio)}</p>
       ${links.length ? `<div class="about__links">${links.map((l) => `<a class="btn btn--ghost btn--sm" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${icon(l.icon || 'link')}<span>${esc(l.label)}</span></a>`).join('')}</div>` : ''}
     </div>
