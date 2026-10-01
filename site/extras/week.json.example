@@ -10,5 +10,8 @@
     { "label": "median throughput", "value": 82.4, "unit": "TFLOP/s", "numeric": true },
     { "label": "correctness", "value": "PASS", "status": "good" }
   ],
-  "cover": "results/20260911T133621.601983Z/throughput.png"
+  "cover": "results/20260911T133621.601983Z/throughput.png",
+  "columns": {
+    "telemetry.jsonl": { "gpu_csv": ["gpu_temp_c", "gpu_util_pct", "gpu_power_w"] }
+  }
 }

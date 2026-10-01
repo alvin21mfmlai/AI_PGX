@@ -1,6 +1,6 @@
 // The landing page.
 import { esc, formatDate } from '../lib/util.mjs';
-import { icon, statTile, weekCard, placeholderCard, refList, tagList } from './partials.mjs';
+import { icon, statTile, weekCard, placeholderCard, refList, tagList, liveChart } from './partials.mjs';
 
 export function homePage({ config, weeks, refIndex }) {
   const site = config.site;
@@ -36,6 +36,10 @@ export function homePage({ config, weeks, refIndex }) {
   </div>
 </section>`;
 
+  // Without a pipeline-made figure, the richest headline chart (several series, a few points each) is drawn live.
+  const featuredChart = latest?.results?.charts?.length
+    ? ([...latest.results.charts].filter((c) => c.points >= 3).sort((a, b) => b.series.length - a.series.length)[0] || latest.results.charts[0])
+    : null;
   const latestSection = latest ? `
 <section class="section section--latest" id="latest" aria-labelledby="latest-title">
   <div class="wrap">
@@ -49,7 +53,8 @@ export function homePage({ config, weeks, refIndex }) {
         ${latest.highlights?.length ? `<div class="stats stats--row">${latest.highlights.slice(0, 4).map((h) => statTile(h, { size: 'sm' })).join('')}</div>` : ''}
         <div class="feature__cta"><a class="btn btn--primary" href="${esc(latest.url)}">Read the full write-up ${icon('arrow')}</a><a class="btn btn--ghost" href="${esc(latest.repoUrl)}" target="_blank" rel="noopener noreferrer">${icon('github')} Folder on GitHub</a></div>
       </div>
-      ${latest.cover ? `<a class="feature__media" href="${esc(latest.url)}#results" aria-label="Open results of ${esc(latest.title)}"><img src="${esc(latest.url + latest.cover)}" alt="Result chart from ${esc(latest.label)} ${String(latest.num).padStart(2, '0')}"${latest.coverSize ? ` width="${latest.coverSize.width}" height="${latest.coverSize.height}"` : ''} loading="lazy" decoding="async"></a>` : ''}
+      ${latest.cover ? `<a class="feature__media" href="${esc(latest.url)}#results" aria-label="Open results of ${esc(latest.title)}"><img src="${esc(latest.url + latest.cover)}" alt="Result chart from ${esc(latest.label)} ${String(latest.num).padStart(2, '0')}"${latest.coverSize ? ` width="${latest.coverSize.width}" height="${latest.coverSize.height}"` : ''} loading="lazy" decoding="async"></a>`
+        : featuredChart ? `<div class="feature__media feature__media--chart">${liveChart(featuredChart, { heading: 'h3', sub: `drawn live from <code>${esc(featuredChart.file.replace(/#.*$/, ''))}</code> · <a href="${esc(latest.url)}#${esc(featuredChart.id)}">open in the write-up</a>` })}</div>` : ''}
     </div>
   </div>
 </section>` : '';
@@ -92,7 +97,7 @@ export function homePage({ config, weeks, refIndex }) {
         <span class="road__dot" aria-hidden="true"></span>
         <div class="road__body">
           <div class="road__head"><h3>${wk ? `<a href="${esc(wk.url)}">${esc(r.title)}</a>` : esc(r.title)}</h3>${pill}</div>
-          <p>${esc(r.blurb)}${wk ? ` <span class="muted">— shipped as “${esc(wk.title)}”.</span>` : ''}</p>
+          <p>${esc(r.blurb)}${wk && wk.title.trim().toLowerCase() !== String(r.title).trim().toLowerCase() ? ` <span class="muted">— shipped as “${esc(wk.title)}”.</span>` : ''}</p>
         </div>
       </li>`; }).join('')}
     </ol>
@@ -139,7 +144,7 @@ export function homePage({ config, weeks, refIndex }) {
     <div class="about__card">
       <p class="eyebrow">About the author</p>
       <h2 id="about-title">${esc(a.name)}</h2>
-      <p class="about__role">${esc(a.role)}${a.location ? ` · ${esc(a.location)}` : ''} · ${esc(a.nationality)}</p>
+      <p class="about__role">${esc(a.role)}${a.location ? ` · ${esc(a.location)}` : ''}${a.nationality ? ` · ${esc(a.nationality)}` : ''}</p>
       <p>${esc(a.bio)}</p>
       ${links.length ? `<div class="about__links">${links.map((l) => `<a class="btn btn--ghost btn--sm" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${icon(l.icon || 'link')}<span>${esc(l.label)}</span></a>`).join('')}</div>` : ''}
     </div>

@@ -30,14 +30,18 @@
         "week": 2
       },
       {
+        "title": "Local LLM inference and structured-response baseline",
+        "blurb": "Native Arm64 llama.cpp on the GB10's SM121 GPU: CPU vs GPU tokens per second, run-to-run stability and strict JSON correctness for a pinned Qwen2.5-1.5B checkpoint.",
+        "week": 3
+      },
+      {
         "title": "Arm64 / SM121 framework compatibility atlas",
         "blurb": "Which frameworks, wheels and kernels actually run natively on the GB10's compute-capability-12.1 GPU.",
-        "week": 3,
         "status": "planned"
       },
       {
-        "title": "Local LLM serving",
-        "blurb": "Open-weight models from the 128 GB unified memory: quantisation, context length and tokens per second.",
+        "title": "Larger local LLM serving",
+        "blurb": "Open-weight models from the 128 GB unified memory: quantisation, context length and tokens per second at scale.",
         "status": "planned"
       },
       {
@@ -395,6 +399,14 @@
         "ollama",
         "tensorrt"
       ]
+    },
+    {
+      "tag": "Structured output",
+      "match": ["strict json", "structured output", "structured-response", "json schema", "json output"]
+    },
+    {
+      "tag": "Arm64",
+      "match": ["arm64", "aarch64"]
     },
     {
       "tag": "Fine-tuning",

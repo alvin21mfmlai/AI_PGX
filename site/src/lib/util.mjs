@@ -104,14 +104,26 @@ export function isoDate(d) {
   return Number.isNaN(x.getTime()) ? '' : x.toISOString().slice(0, 10);
 }
 
-// Session / manifest folder names: "20260911T133621.601983Z" or "20260922T073348393671838Z-full" → ISO timestamp + profile suffix.
+// Session / manifest folder names: "20260911T133621.601983Z", "20260922T073348393671838Z-full" or
+// "20261001T073959-2504c497" → ISO timestamp + profile suffix. A short hexadecimal suffix is a run id
+// (a hash the pipeline appended for uniqueness), not a profile, and is reported separately.
 export function parseStamp(name) {
   const m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})\.?(\d*)Z?(?:[-_](.+))?$/.exec(String(name).trim());
   if (!m) return null;
   const iso = `${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}${m[7] ? '.' + m[7].slice(0, 3) : ''}Z`;
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return null;
-  return { iso: d.toISOString(), profile: (m[8] || '').trim() };
+  const suffix = (m[8] || '').trim();
+  const isHash = /^[0-9a-f]{6,40}$/i.test(suffix) && /\d/.test(suffix) && /[a-f]/i.test(suffix);
+  return { iso: d.toISOString(), profile: isHash ? '' : suffix, hash: isHash ? suffix : '' };
+}
+
+// Paths under a home directory reveal the account name of whoever ran the pipeline; shorten them before
+// anything copied from a result file is rendered ("/home/alice/Desktop/AI_PGX/x" → "~/Desktop/AI_PGX/x").
+export function redactPaths(s) {
+  return String(s ?? '')
+    .replace(/(^|[\s"'=:,(\[])\/(?:home|Users|export\/home)\/[^/\s"'`]+(?=\/|\s|$|["'`,)\]])/g, '$1~')
+    .replace(/(^|[\s"'=:,(\[])[A-Za-z]:\\Users\\[^\\\s"'`]+(?=\\|\s|$|["'`,)\]])/g, '$1~');
 }
 export const parseSessionStamp = (name) => parseStamp(name)?.iso || null;
 

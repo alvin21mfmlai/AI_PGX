@@ -1,5 +1,5 @@
 // Reusable fragments shared by the home page and the week pages.
-import { esc, formatDate, formatNumber, formatBytes, compactNumber } from '../lib/util.mjs';
+import { esc, formatDate, formatNumber, formatBytes, compactNumber, redactPaths } from '../lib/util.mjs';
 
 export const ICONS = {
   github: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.05.78 2.12v3.14c0 .31.2.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg>',
@@ -20,20 +20,33 @@ export const ICONS = {
 
 export const icon = (name, cls = 'ico') => `<span class="${cls}">${ICONS[name] || ''}</span>`;
 
+// JSON that is safe inside a <script type="application/json"> block.
+export const jsonForScript = (obj) => JSON.stringify(obj).replace(/<\//g, '<\\/').replace(/<!--/g, '<\\!--');
+
+// A live chart (rendered by assets/charts.js) for a chart spec produced by the build.
+export function liveChart(c, { heading = 'h4', sub = '' } = {}) {
+  const meta = [`${c.series.length} series`, c.unit ? `unit: ${c.unit}` : null, c.kind === 'line' ? 'line chart' : 'bar chart'].filter(Boolean).join(' · ');
+  return `<figure class="chart-card">
+  <figcaption class="chart-head"><${heading} class="chart-title">${esc(c.title)}</${heading}><p class="chart-sub">${sub || `${esc(meta)} · from <code>${esc(c.file)}</code>`}</p></figcaption>
+  <div class="chart" data-chart tabindex="0" role="img" aria-label="${esc(c.title)}. ${esc(meta)}."><script type="application/json">${jsonForScript(c)}</script><noscript><p class="muted small">Enable JavaScript for the interactive chart.</p></noscript></div>
+</figure>`;
+}
+
 export function tagList(tags, cls = 'tags') {
   if (!tags?.length) return '';
   return `<ul class="${cls}" aria-label="Topics">${tags.map((t) => `<li class="tag">${esc(t)}</li>`).join('')}</ul>`;
 }
 
-export function statDecimals(v) {
+export function statDecimals(v, unit = '') {
   const n = Number(v);
   if (Number.isInteger(n) || Math.abs(n) >= 100) return 0;
+  if (unit === '×' && Math.abs(n) < 10) return 2; // a 2.64× speedup should not round to 2.6
   return Math.abs(n) >= 1 ? 1 : 2;
 }
 
 export function statTile({ label, value, unit = '', status = '', numeric = false, citeHtml = '' }, { size = '' } = {}) {
   const num = numeric && Number.isFinite(Number(value));
-  const d = num ? statDecimals(value) : 0;
+  const d = num ? statDecimals(value, unit) : 0;
   const shown = num ? formatNumber(Number(value), d) : esc(String(value));
   const isText = !num && String(value).length > 6;
   const statusIcon = status === 'good' ? icon('check', 'ico ico--good') : status === 'warn' ? icon('warn', 'ico ico--warn') : '';
@@ -69,7 +82,7 @@ export function weekCard(w, { base = './', featured = false } = {}) {
     <p class="wcard__summary">${esc(w.summaryText)}</p>
     ${tagList(w.tags)}
     <div class="wcard__foot">
-      ${stats.length ? `<ul class="minis" aria-label="Key results">${stats.map((s) => `<li><strong>${s.numeric ? esc(formatNumber(Number(s.value), statDecimals(s.value))) : esc(String(s.value))}</strong> <span>${esc(s.unit ? s.unit : s.label)}</span></li>`).join('')}</ul>` : `<span class="minis"><span>${w.readingTime.minutes} min read</span></span>`}
+      ${stats.length ? `<ul class="minis" aria-label="Key results">${stats.map((s) => `<li><strong>${s.numeric ? esc(formatNumber(Number(s.value), statDecimals(s.value, s.unit))) : esc(String(s.value))}</strong> <span>${esc(s.unit ? s.unit : s.label)}</span></li>`).join('')}</ul>` : `<span class="minis"><span>${w.readingTime.minutes} min read</span></span>`}
       ${w.sparkline ? sparklineSVG(w.sparkline.values) : ''}
     </div>
     <span class="wcard__cta">Open the write-up ${icon('arrow')}</span>
@@ -114,7 +127,7 @@ export function fileTable(files, { max = 60, hrefLabel = 'GitHub' } = {}) {
 
 export function dataTable(header, rows, { caption = '', total = rows.length } = {}) {
   const th = header.map((h) => `<th scope="col">${esc(h)}</th>`).join('');
-  const body = rows.map((r) => `<tr>${r.map((c) => `<td class="${/^[-+]?[\d.]+(e[-+]?\d+)?$/i.test(c) ? 'num' : ''}">${esc(fmtCell(c))}</td>`).join('')}</tr>`).join('');
+  const body = rows.map((r) => `<tr>${r.map((c) => { const full = redactPaths(fmtCell(c)); const cut = full.length > 160 ? `${full.slice(0, 157).trimEnd()}…` : full; return `<td class="${/^[-+]?[\d.]+(e[-+]?\d+)?$/i.test(c) ? 'num' : ''}"${cut !== full ? ` title="${esc(full)}"` : ''}>${esc(cut)}</td>`; }).join('')}</tr>`).join('');
   const note = total > rows.length ? `<p class="muted small">Showing the first ${rows.length} of ${total} rows — download the CSV for the rest.</p>` : '';
   return `<div class="tbl-wrap" tabindex="0" role="group" aria-label="Data table (scrolls horizontally)">${caption ? `<p class="tbl-cap">${esc(caption)}</p>` : ''}<table class="data"><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>${note}`;
 }

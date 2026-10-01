@@ -1,8 +1,8 @@
 // One page per WEEKxx folder.
 import { esc, formatDate, formatBytes, formatNumber } from '../lib/util.mjs';
-import { icon, statTile, tagList, refList, fileTable, dataTable } from './partials.mjs';
+import { icon, statTile, tagList, refList, fileTable, dataTable, jsonForScript } from './partials.mjs';
 
-const jsonForScript = (obj) => JSON.stringify(obj).replace(/<\//g, '<\\/').replace(/<!--/g, '<\\!--');
+
 
 export function weekPage({ config, week: w, weeks }) {
   const num = String(w.num).padStart(2, '0');
@@ -61,7 +61,7 @@ export function weekPage({ config, week: w, weeks }) {
     const referenced = new Set([...r.summaryHtml.matchAll(/src="([^"]+)"/g)].map((m) => m[1]));
     const extraImages = r.images.filter((im) => !referenced.has(im.src));
     const chartedFiles = new Set(r.charts.flatMap((c) => c.files));
-    const otherTables = r.tables.filter((t) => !chartedFiles.has(t.rel) && !(r.primaryTable && t.rel === r.primaryTable.rel));
+    const otherTables = r.tables.filter((t) => !t.derived && !chartedFiles.has(t.rel) && !(r.primaryTable && t.rel === r.primaryTable.rel));
     const archive = r.archives[0];
     const statusBadge = r.status ? `<span class="badge badge--${r.complete ? 'good' : 'warn'}">${r.complete ? icon('check') : icon('warn')} ${esc(r.status)}</span>` : '';
     const panel = (rows, title, url) => rows.length ? `<div class="kv rv"><div class="kv__head"><h3>${esc(title)}</h3>${url ? `<a class="src" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(url.split('/').pop())} ${icon('link')}</a>` : ''}</div><dl>${rows.map((row) => `<div class="${row.long ? 'kv__long' : ''}"><dt>${esc(row.label)}</dt><dd class="${row.mono ? 'mono' : ''}${row.truncate ? ' trunc' : ''}${row.muted ? ' muted' : ''}${row.status ? ` is-${row.status}` : ''}" ${row.truncate ? `title="${esc(row.text)}"` : ''}>${row.status === 'good' ? icon('check', 'ico ico--good') : row.status === 'warn' ? icon('warn', 'ico ico--warn') : ''}${esc(row.text)}</dd></div>`).join('')}</dl></div>` : '';
@@ -78,13 +78,14 @@ export function weekPage({ config, week: w, weeks }) {
   </div>
   ${r.sessions.length > 1 ? `<details class="disc"><summary>All ${r.sessions.length} runs recorded for this week <span class="muted">(the page leads with the most complete one)</span></summary><div class="tbl-wrap" tabindex="0" role="group" aria-label="Runs table (scrolls horizontally)"><table class="data"><thead><tr><th scope="col">Run</th><th scope="col">Profile</th><th scope="col">Status</th><th scope="col" class="num">Cases</th><th scope="col">Captured</th></tr></thead><tbody>${r.sessions.map((sn) => `<tr${sn.lead ? ' class="is-lead"' : ''}><td class="mono"><a href="${esc(sn.url)}" target="_blank" rel="noopener noreferrer">${esc(sn.name)}</a>${sn.lead ? ' <span class="badge badge--good">shown</span>' : ''}</td><td>${esc(sn.profile)}</td><td>${esc(sn.status || '—')}</td><td class="num">${sn.cases || '—'}</td><td>${sn.stamp ? esc(formatDate(sn.stamp)) : '—'}</td></tr>`).join('')}</tbody></table></div></details>` : ''}
   ${r.summaryHtml ? `<div class="md md--summary">${r.summaryHtml}</div>` : ''}
-  ${(r.summaryPanel.length || r.configPanel.length) ? `<div class="kvgrid">${panel(r.summaryPanel, 'Run summary', r.summaryUrl)}${panel(r.configPanel, 'Configuration', r.configUrl)}</div>` : ''}
+  ${(r.summaryPanel.length || r.configPanel.length || r.checkinPanel?.length) ? `<div class="kvgrid">${panel(r.summaryPanel, 'Run summary', r.summaryUrl)}${panel(r.configPanel, 'Configuration', r.configUrl)}${panel(r.checkinPanel || [], 'Check-in', r.checkinUrl)}</div>` : ''}
+  ${(r.comparisons || []).map((c) => `<h3 class="wsub">${esc(c.title)} <span class="muted small">side by side, from ${esc((r.summaryUrl || 'summary.json').split('/').pop())}</span></h3>${comparisonTable(c)}`).join('')}
   ${r.primaryTable && r.primaryTable.header.length ? `<h3 class="wsub">Results table <span class="muted small">${esc(r.primaryTable.rel)} · ${r.primaryTable.total} rows</span></h3>${dataTable(r.primaryTable.header, r.primaryTable.rows, { total: r.primaryTable.total })}<p class="small chart-links"><a href="${esc(r.primaryTable.raw)}">${icon('download')} Download CSV</a><a href="${esc(r.primaryTable.url)}" target="_blank" rel="noopener noreferrer">View on GitHub</a></p>` : ''}
   ${r.charts.length ? `<h3 class="wsub">Interactive charts <span class="muted small">drawn from the data files in the session — hover or focus for exact values${r.skipped ? `; ${r.skipped} lower-priority series available in the table views` : ''}</span></h3>
   <div class="charts">${r.charts.map((c) => chartCard(c, r)).join('')}</div>` : ''}
   ${r.dashboards.length ? `<div class="dash rv">${icon('spark')}<div><strong>This run generated its own dashboard.</strong> <span class="muted">A static page produced by the week's pipeline, hosted here unchanged.</span></div>${r.dashboards.map((d) => `<a class="btn btn--ghost btn--sm" href="${esc(d.src)}" target="_blank" rel="noopener">Open ${esc(d.name)} ${icon('arrow')}</a>`).join('')}</div>` : ''}
   ${extraImages.length ? `<h3 class="wsub">Figures</h3><div class="gallery">${extraImages.map((im) => `<figure class="md-fig"><a href="${esc(im.src)}" target="_blank" rel="noopener"><img src="${esc(im.src)}" alt="${esc(im.name)}"${im.width ? ` width="${im.width}" height="${im.height}"` : ''} loading="lazy" decoding="async"></a><figcaption>${esc(im.rel.split('/').slice(-1)[0])}</figcaption></figure>`).join('')}</div>` : ''}
-  ${otherTables.length ? `<h3 class="wsub">Other data files</h3>${otherTables.map((t) => `<details class="disc"><summary>${esc(t.rel)} <span class="muted">(${t.total} rows)</span></summary>${dataTable(t.header, t.rows, { total: t.total })}<p class="small chart-links"><a href="${esc(t.raw)}">${icon('download')} Download</a><a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">View on GitHub</a></p></details>`).join('')}` : ''}
+  ${otherTables.length ? `<h3 class="wsub">Other data files</h3>${otherTables.map((t) => `<details class="disc"><summary>${esc(t.rel)} <span class="muted">(${t.pattern ? `${t.total} files, one row each` : `${t.total} rows`})</span></summary>${dataTable(t.header, t.rows, { total: t.total })}<p class="small chart-links">${t.raw ? `<a href="${esc(t.raw)}">${icon('download')} Download</a>` : ''}<a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">View on GitHub</a></p></details>`).join('')}` : ''}
   ${r.archives.length > 1 ? `<details class="disc"><summary>Exports and archives (${r.archives.length})</summary>${fileTable(r.archives.map((a) => ({ rel: a.rel, size: a.size, url: a.url })), { hrefLabel: 'GitHub (raw download)' })}</details>` : ''}
 </section>`;
   }
@@ -95,7 +96,7 @@ export function weekPage({ config, week: w, weeks }) {
     environment = `
 <section class="wsec" id="environment" aria-labelledby="env-h">
   <div class="wsec__head"><h2 id="env-h">Environment &amp; provenance</h2><a class="src" href="${esc(r.envUrl)}" target="_blank" rel="noopener noreferrer">${esc(r.envUrl.split('/').slice(-1)[0])}/ on GitHub ${icon('link')}</a></div>
-  <p class="muted">Captured automatically with the run, so anyone can see exactly which driver, container and host produced these numbers.</p>
+  <p class="muted">Captured automatically with the run, so anyone can see exactly which driver, toolchain, container, model checkpoint and host produced these numbers.</p>
   <div class="envgrid">
     ${groups.map((g) => `<div class="envcard rv"><h3>${esc(g)}</h3><dl>${r.env.items.filter((i) => i.group === g).map((i) => `<div><dt>${esc(i.label)}</dt><dd class="${i.mono ? 'mono' : ''}${i.truncate ? ' trunc' : ''}" ${i.truncate ? `title="${esc(i.value)}"` : ''}>${i.href ? `<a href="${esc(i.href)}" target="_blank" rel="noopener noreferrer">${esc(i.hrefLabel || i.value)}</a>` : esc(i.value)}</dd></div>`).join('')}</dl></div>`).join('')}
   </div>
@@ -149,7 +150,7 @@ export function weekPage({ config, week: w, weeks }) {
   </div>
   <div class="aside__box">
     <p class="aside__h">Run it yourself</p>
-    <p class="small muted">Clone the repository on a ThinkStation PGX (or another GB10 machine), enter <code>${esc(w.relDir)}/</code> and run the runner script. Results land in <code>results/</code>.</p>
+    <p class="small muted">Clone the repository on a ThinkStation PGX (or another GB10 machine), enter <code>${esc(w.relDir)}/</code> and run the runner script. Results land in <code>${esc(w.resultsBase || 'results')}/</code>.</p>
     <a class="btn btn--ghost btn--sm" href="${esc(w.repoUrl)}" target="_blank" rel="noopener noreferrer">${icon('github')} Open the folder</a>
   </div>
   ${(prev || next) ? `<div class="aside__box aside__nav">${prev ? `<a href="../${esc(prev.slug)}/">← ${esc(prev.label)} ${String(prev.num).padStart(2, '0')}<span>${esc(prev.title)}</span></a>` : ''}${next ? `<a href="../${esc(next.slug)}/">${esc(next.label)} ${String(next.num).padStart(2, '0')} →<span>${esc(next.title)}</span></a>` : ''}</div>` : ''}
@@ -173,8 +174,15 @@ function shortDocLabel(d) {
   return base.charAt(0).toUpperCase() + base.slice(1).toLowerCase();
 }
 
+function comparisonTable(c) {
+  const th = c.header.map((h, i) => `<th scope="col"${i ? ' class="num"' : ''}>${esc(h)}</th>`).join('');
+  const body = c.rows.map((row) => `<tr><th scope="row">${esc(row.label)}</th>${row.cells.map((cell) => `<td class="num${cell.mono ? ' mono' : ''}${cell.muted ? ' muted' : ''}${cell.status ? ` is-${cell.status}` : ''}">${cell.status === 'good' ? icon('check', 'ico ico--good') : cell.status === 'warn' ? icon('warn', 'ico ico--warn') : ''}${esc(cell.text)}</td>`).join('')}</tr>`).join('');
+  const notes = (c.notes || []).map((n) => `<p class="muted small">${esc(n)}</p>`).join('');
+  return `<div class="tbl-wrap" tabindex="0" role="group" aria-label="${esc(c.title)} comparison table (scrolls horizontally)"><table class="data cmp"><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>${notes}`;
+}
+
 function chartCard(c, r) {
-  const t = r.tables.find((x) => x.rel === c.file);
+  const t = r.tables.find((x) => x.rel === c.file.replace(/#.*$/, '') && !x.derived);
   const table = chartTable(c);
   const meta = [`${c.series.length} series${c.extra ? ` (+${c.extra} not drawn)` : ''}`, c.unit ? `unit: ${c.unit}` : null, c.kind === 'line' ? 'line chart' : 'bar chart'].filter(Boolean).join(' · ');
   const stats = c.kind === 'line' && c.stats && c.stats.length > 1 ? `<table class="chart-stats" aria-label="Series summary"><thead><tr><th scope="col">Series</th><th scope="col" class="num">Median</th><th scope="col" class="num">Min</th><th scope="col" class="num">Max</th></tr></thead><tbody>${c.stats.map((s, i) => `<tr><td><span class="key" style="--c:var(--s${i + 1})"></span> ${esc(s.name)}</td><td class="num">${esc(fmtStat(s.median))}</td><td class="num">${esc(fmtStat(s.min))}</td><td class="num">${esc(fmtStat(s.max))}</td></tr>`).join('')}</tbody></table>` : '';
@@ -184,7 +192,7 @@ function chartCard(c, r) {
   ${stats}
   <div class="chart-foot">
     <details class="disc disc--sm"><summary>Table view</summary>${table}</details>
-    <div class="chart-links">${t ? `<a href="${esc(t.raw)}">${icon('download')} CSV</a><a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">GitHub</a>` : ''}</div>
+    <div class="chart-links">${t ? `${t.raw ? `<a href="${esc(t.raw)}">${icon('download')} ${/\.json$/i.test(t.rel) ? 'JSON' : 'CSV'}</a>` : ''}<a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">GitHub</a>` : ''}</div>
   </div>
 </figure>`;
 }

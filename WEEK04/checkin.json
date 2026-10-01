@@ -1,0 +1,9 @@
+{
+  "week": 4,
+  "period": "2026-09-28 to 2026-10-04",
+  "completed": "REPLACE_WITH_COMPLETED_WORK",
+  "failed_or_blocked": "REPLACE_WITH_FAILURES_OR_NONE",
+  "scope": "continue",
+  "scope_options": ["continue", "reduce", "advance"],
+  "notes": "Default is continue. Use reduce if Week 3 GPU execution is still blocked; use advance only after the full Week 4 acceptance run passes."
+}
