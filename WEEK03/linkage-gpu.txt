@@ -1,7 +1,0 @@
-{
-  "columns": {
-    "telemetry.jsonl": {
-      "gpu_csv": ["gpu_temp_c", "gpu_util_pct", "gpu_power_w"]
-    }
-  }
-}

@@ -1,2 +1,0 @@
-GPU=NVIDIA GB10 capability=12.1
-SM121 CUDA smoke PASS; model kernels still require benchmark validation.

@@ -1,2 +1,0 @@
-1a522c17e17e4ca64225d82c27ce7254a58cc2baec7ba69135af0060be76fb16  vendor/llama.cpp/build-gpu/bin/llama-server
-542d11b9a81ae2dd2ccb0b72371af49ff299a77deaac0cbca811409d7ef4b53a  vendor/llama.cpp/build-gpu/bin/llama-bench
