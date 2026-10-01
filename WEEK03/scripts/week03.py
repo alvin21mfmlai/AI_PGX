@@ -224,8 +224,16 @@ def stop_child(child):
 
 
 def evaluate(root, mode, c, model):
+    configured_port = c["port"]
+    c = dict(c)
     with socket.socket() as sock:
-        sock.bind(("127.0.0.1", c["port"]))  # Fail, do not kill a process using the port.
+        sock.bind(("127.0.0.1", 0))
+        c["port"] = sock.getsockname()[1]
+    dump(root / f"endpoint-{mode}.json", {
+        "host": "127.0.0.1", "port": c["port"],
+        "configured_port": configured_port, "selection": "os_assigned"
+    })
+    print(f"{mode} evaluation endpoint: http://127.0.0.1:{c['port']}", flush=True)
     server = ROOT / f"vendor/llama.cpp/build-{mode}/bin/llama-server"
     cmd = [str(server), "-m", str(model), "--host", "127.0.0.1", "--port", str(c["port"]),
            "--parallel", "1", "-c", str(c["context"]), "-b", str(c["batch"]), "-ub", str(c["ubatch"]),
