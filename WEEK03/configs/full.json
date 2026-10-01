@@ -1,0 +1,1 @@
+{"name":"full","modes":["cpu","gpu"],"repetitions":10,"prompt_tokens":512,"generation_tokens":128,"threads":8,"context":2048,"batch":256,"ubatch":128,"port":8083,"quality_cases":12,"seed":42}

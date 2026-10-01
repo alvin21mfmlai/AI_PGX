@@ -1,0 +1,13 @@
+.venv/
+models/
+vendor/
+build-gate/
+runs/
+exports/
+manifests/
+__pycache__/
+*.pyc
+*.part
+.env
+*.key
+*.pem

@@ -1,0 +1,1 @@
+{"name":"cpu-fallback","modes":["cpu"],"repetitions":3,"prompt_tokens":128,"generation_tokens":32,"threads":8,"context":1024,"batch":128,"ubatch":64,"port":8083,"quality_cases":4,"seed":42}
