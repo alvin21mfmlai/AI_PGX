@@ -1,0 +1,11 @@
+{
+  "verified_on": "2026-09-21",
+  "llama_tag": "b11064",
+  "llama_commit": "a894dae939d426954ce54bb604824f1ae918a0c5",
+  "model_repo": "Qwen/Qwen2.5-1.5B-Instruct-GGUF",
+  "model_revision": "91cad51170dc346986eccefdc2dd33a9da36ead9",
+  "model_file": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+  "model_sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+  "cuda_architecture": "121a-real",
+  "note": "Upstream pre-release pin, not a claim of hardware validation. Installed Lenovo CUDA compiler must support sm_121a. No OS/driver upgrades are performed."
+}

@@ -1,0 +1,2 @@
+5f369f31e5231cc5dd8fece392e11d46f87fb2970942463aa721046e582d0ee6  vendor/llama.cpp/build-cpu/bin/llama-server
+0b1c90623e10f27aeb04ebc884c0e1bc2175ee9e6211e578f31ff1e6e0132cd2  vendor/llama.cpp/build-cpu/bin/llama-bench

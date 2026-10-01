@@ -1,0 +1,3 @@
+0.00.000.554 I srv  llama_server: initializing ...
+version: 0.4.1-dev (build 1, commit a894dae)
+built with GNU 13.3.0 for Linux aarch64

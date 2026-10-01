@@ -1,0 +1,70 @@
+{
+  "case": {
+    "id": 4,
+    "prompt": "Synthetic utility training record, not real operations. Zone DEMO-05. Measured inflow is 140 m3; recorded demand is 98 m3 for the same interval. Return only one JSON object with exactly these keys: zone (string), unaccounted_m3 (integer, inflow minus demand), leak_confirmed (boolean). The difference alone does not confirm a leak, so leak_confirmed must be false. Do not give operational instructions.",
+    "expected": {
+      "zone": "DEMO-05",
+      "unaccounted_m3": 42,
+      "leak_confirmed": false
+    }
+  },
+  "warmup": false,
+  "wall_seconds": 1.4742578549776226,
+  "pass": false,
+  "score_details": {
+    "strict_json_valid": false,
+    "schema_valid": false,
+    "values_correct": false,
+    "pass": false
+  },
+  "request": {
+    "model": "pgx-week03",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Synthetic utility training record, not real operations. Zone DEMO-05. Measured inflow is 140 m3; recorded demand is 98 m3 for the same interval. Return only one JSON object with exactly these keys: zone (string), unaccounted_m3 (integer, inflow minus demand), leak_confirmed (boolean). The difference alone does not confirm a leak, so leak_confirmed must be false. Do not give operational instructions."
+      }
+    ],
+    "temperature": 0,
+    "seed": 42,
+    "max_tokens": 128,
+    "stream": false,
+    "cache_prompt": false
+  },
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "```json\n{\n  \"zone\": \"DEMO-05\",\n  \"unaccounted_m3\": 42,\n  \"leak_confirmed\": false\n}\n```"
+        }
+      }
+    ],
+    "created": 1790840463,
+    "model": "pgx-week03",
+    "system_fingerprint": "b1-a894dae",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 39,
+      "prompt_tokens": 127,
+      "total_tokens": 166,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "id": "chatcmpl-8KOr4hnH7EsQcXguUWCO4GL6jI5ATkJp",
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 127,
+      "prompt_ms": 804.77,
+      "prompt_per_token_ms": 6.336771653543307,
+      "prompt_per_second": 157.80906345912496,
+      "predicted_n": 39,
+      "predicted_ms": 649.191,
+      "predicted_per_token_ms": 17.083973684210527,
+      "predicted_per_second": 58.53439126543652
+    }
+  }
+}
